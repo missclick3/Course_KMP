@@ -155,6 +155,7 @@ ksp-gradle-plugin = { module = "com.google.devtools.ksp:com.google.devtools.ksp.
 
 [plugins]
 convention-android-application = { id = "ru.missclick.convention.android.application", version = "unspecified" }
+convention-android-application-compose = { id = "ru.missclick.convention.android.application.compose", version = "unspecified" }
 
 # Android
 android-application = { id = "com.android.application", version.ref = "agp" }
