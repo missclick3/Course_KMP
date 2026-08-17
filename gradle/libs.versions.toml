@@ -34,6 +34,7 @@ compose-navigation = "2.9.2"
 core-splashscreen = "1.2.0"
 jetbrains-core-bundle = "1.0.1"
 jetbrains-savedstate = "1.4.0"
+material-icons = "1.7.3"
 
 # KotlinX
 kotlinx-coroutines = "1.11.0"
@@ -74,6 +75,8 @@ core-splashscreen = { module = "androidx.core:core-splashscreen", version.ref = 
 # Compose Multiplatform
 jetbrains-compose-backhandler = { module = "org.jetbrains.compose.ui:ui-backhandler", version.ref = "compose-multiplatform" }
 jetbrains-compose-foundation = { module = "org.jetbrains.compose.foundation:foundation", version.ref = "compose-multiplatform" }
+jetbrains-compose-material-icons-core = { module = "org.jetbrains.compose.material:material-icons-core", version.ref = "material-icons" }
+jetbrains-compose-material-icons-extended = { module = "org.jetbrains.compose.material:material-icons-extended", version.ref = "material-icons" }
 jetbrains-compose-material3 = { module = "org.jetbrains.compose.material3:material3", version = "1.11.0-alpha07" }
 jetbrains-compose-navigation = { module = "org.jetbrains.androidx.navigation:navigation-compose", version.ref = "compose-navigation" }
 jetbrains-compose-runtime = { module = "org.jetbrains.compose.runtime:runtime", version.ref = "compose-multiplatform" }
@@ -152,10 +155,18 @@ androidx-room-gradle-plugin = { module = "androidx.room:room-gradle-plugin", ver
 compose-gradle-plugin = { module = "org.jetbrains.kotlin:compose-compiler-gradle-plugin", version.ref = "kotlin" }
 kotlin-gradle-plugin = { module = "org.jetbrains.kotlin:kotlin-gradle-plugin", version.ref = "kotlin" }
 ksp-gradle-plugin = { module = "com.google.devtools.ksp:com.google.devtools.ksp.gradle.plugin", version.ref = "ksp" }
+buildkonfig-gradlePlugin = { group = "com.codingfeline.buildkonfig", name = "buildkonfig-gradle-plugin", version.ref = "buildkonfig" }
+buildkonfig-compiler = { group = "com.codingfeline.buildkonfig", name = "buildkonfig-compiler", version.ref = "buildkonfig" }
 
 [plugins]
 convention-android-application = { id = "ru.missclick.convention.android.application", version = "unspecified" }
 convention-android-application-compose = { id = "ru.missclick.convention.android.application.compose", version = "unspecified" }
+convention-cmp-application = { id = "ru.missclick.convention.cmp.application", version = "unspecified" }
+convention-kmp-library = { id = "ru.missclick.convention.kmp.library", version = "unspecified" }
+convention-cmp-library = { id = "ru.missclick.convention.cmp.library", version = "unspecified" }
+convention-cmp-feature = { id = "ru.missclick.convention.cmp.feature", version = "unspecified" }
+convention-buildkonfig = { id = "ru.missclick.convention.buildkonfig", version = "unspecified" }
+convention-room = { id = "ru.missclick.convention.room", version = "unspecified" }
 
 # Android
 android-application = { id = "com.android.application", version.ref = "agp" }

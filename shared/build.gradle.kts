@@ -1,23 +1,11 @@
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 
 plugins {
-    alias(libs.plugins.kotlin.multiplatform)
-    alias(libs.plugins.android.kotlin.multiplatform.library)
-    alias(libs.plugins.compose.multiplatform)
+    alias(libs.plugins.convention.cmp.application)
     alias(libs.plugins.compose.compiler)
 }
 
 kotlin {
-    listOf(
-        iosArm64(),
-        iosSimulatorArm64()
-    ).forEach { iosTarget ->
-        iosTarget.binaries.framework {
-            baseName = "Shared"
-            isStatic = true
-        }
-    }
-
     android {
         namespace = "ru.missclick.course_kmp.shared"
         compileSdk = libs.versions.project.compile.sdk.get().toInt()
@@ -68,8 +56,4 @@ kotlin {
             implementation(libs.jetbrains.lifecycle.compose)
         }
     }
-}
-
-dependencies {
-    androidRuntimeClasspath(libs.jetbrains.compose.ui.tooling)
 }
