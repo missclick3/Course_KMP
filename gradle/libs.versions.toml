@@ -8,6 +8,7 @@ compose-multiplatform = "1.11.1"
 google-services = "4.5.0"
 kotlin = "2.4.10"
 ksp = "2.3.11"
+kermit = "2.1.0"
 
 # Project configuration
 project-application-id = "ru.missclick.course_kmp"
@@ -139,6 +140,9 @@ coil-network-ktor = { module = "io.coil-kt.coil3:coil-network-ktor3", version.re
 moko-permissions = { module = "dev.icerock.moko:permissions", version.ref = "moko-permissions" }
 moko-permissions-compose = { module = "dev.icerock.moko:permissions-compose", version.ref = "moko-permissions" }
 moko-permissions-notifications = { module = "dev.icerock.moko:permissions-notifications", version.ref = "moko-permissions" }
+
+# Logging
+touchlab-kermit = { module = "co.touchlab:kermit", version.ref = "kermit" }
 
 # Testing
 androidx-espresso-core = { module = "androidx.test.espresso:espresso-core", version.ref = "androidx-espresso" }
