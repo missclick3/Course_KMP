@@ -18,11 +18,12 @@ import org.jetbrains.compose.resources.painterResource
 import course_kmp.shared.generated.resources.Res
 import course_kmp.shared.generated.resources.compose_multiplatform
 import org.jetbrains.compose.ui.tooling.preview.Preview
+import ru.missclick.core.designsystem.theme.CourseTheme
 
 @Composable
 @Preview
 fun App() {
-    MaterialTheme {
+    CourseTheme {
         var showContent by remember { mutableStateOf(false) }
         Column(
             modifier = Modifier
