@@ -6,11 +6,12 @@ sealed interface DataError: Error {
         REQUEST_TIMEOUT,
         UNAUTHORIZED,
         FORBIDDEN,
-        NOT_FOUNT,
+        NOT_FOUND,
         CONFLICT,
         TOO_MANY_REQUESTS,
         NO_INTERNET,
         PAYLOAD_ERROR,
+        SERVER_ERROR,
         SERVICE_UNAVAILABLE,
         SERIALIZATION,
         UNKNOWN
