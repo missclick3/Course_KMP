@@ -13,6 +13,10 @@ internal fun Project.configureKotlinMultiplatform() {
             namespace = this@configureKotlinMultiplatform.pathToPackageName()
             compileSdk = libs.findVersion("project-compile-sdk").get().toString().toInt()
             minSdk = libs.findVersion("project-min-sdk").get().toString().toInt()
+
+            androidResources {
+                enable = true
+            }
         }
 
         listOf(
