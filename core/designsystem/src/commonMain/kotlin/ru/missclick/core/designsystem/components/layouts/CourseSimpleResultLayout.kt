@@ -1,6 +1,7 @@
 package ru.missclick.core.designsystem.components.layouts
 
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.ColumnScope
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -21,10 +22,10 @@ import ru.missclick.core.designsystem.theme.CourseTheme
 import ru.missclick.core.designsystem.theme.extended
 
 @Composable
-fun CourseSimpleSuccessLayout(
+fun CourseSimpleResultLayout(
     title: String,
     description: String,
-    icon: @Composable () -> Unit,
+    icon: @Composable ColumnScope.() -> Unit,
     primaryButton: @Composable () -> Unit,
     secondaryButton: @Composable (() -> Unit)? = null,
     secondaryError: String? = null,
@@ -84,7 +85,7 @@ fun CourseSimpleSuccessLayout(
 @Preview
 fun CourseSimpleSuccessLayoutPreview() {
     CourseTheme {
-        CourseSimpleSuccessLayout(
+        CourseSimpleResultLayout(
             title = "Hello World",
             description = "Test description",
             icon = {

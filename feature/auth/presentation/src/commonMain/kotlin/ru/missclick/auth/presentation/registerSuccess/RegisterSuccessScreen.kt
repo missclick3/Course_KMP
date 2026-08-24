@@ -8,7 +8,6 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import androidx.lifecycle.viewmodel.compose.viewModel
 import course_kmp.feature.auth.presentation.generated.resources.Res
 import course_kmp.feature.auth.presentation.generated.resources.account_successfully_created
 import course_kmp.feature.auth.presentation.generated.resources.login
@@ -18,12 +17,11 @@ import course_kmp.feature.auth.presentation.generated.resources.verification_ema
 import org.jetbrains.compose.resources.getString
 import org.jetbrains.compose.resources.stringResource
 import org.koin.compose.viewmodel.koinViewModel
-import ru.missclick.core.designsystem.components.brand.CourseBrandLogo
 import ru.missclick.core.designsystem.components.brand.CourseSuccessIcon
 import ru.missclick.core.designsystem.components.buttons.CourseButton
 import ru.missclick.core.designsystem.components.buttons.CourseButtonStyle
 import ru.missclick.core.designsystem.components.layouts.CourseAdaptiveResultLayout
-import ru.missclick.core.designsystem.components.layouts.CourseSimpleSuccessLayout
+import ru.missclick.core.designsystem.components.layouts.CourseSimpleResultLayout
 import ru.missclick.core.designsystem.components.layouts.CourseSnackbarScaffold
 import ru.missclick.core.designsystem.theme.CourseTheme
 import ru.missclick.core.presentation.util.ObserveAsEvents
@@ -63,7 +61,7 @@ fun RegisterSuccessScreen(
         snackbarHostState = snackbarHostState
     ) {
         CourseAdaptiveResultLayout {
-            CourseSimpleSuccessLayout(
+            CourseSimpleResultLayout(
                 title = stringResource(Res.string.account_successfully_created),
                 description = stringResource(Res.string.verification_email_send_to_x, state.registeredEmail),
                 icon = {
