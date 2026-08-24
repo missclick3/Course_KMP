@@ -20,14 +20,13 @@ import course_kmp.shared.generated.resources.compose_multiplatform
 import org.jetbrains.compose.ui.tooling.preview.Preview
 import ru.missclick.auth.presentation.register.RegisterAction
 import ru.missclick.auth.presentation.register.RegisterRoot
+import ru.missclick.auth.presentation.registerSuccess.RegisterSuccessRoot
 import ru.missclick.core.designsystem.theme.CourseTheme
 
 @Composable
 @Preview
 fun App() {
     CourseTheme {
-        RegisterRoot(
-            onRegisterSuccess = {}
-        )
+        RegisterSuccessRoot()
     }
 }
