@@ -27,6 +27,7 @@ fun CourseSimpleSuccessLayout(
     icon: @Composable () -> Unit,
     primaryButton: @Composable () -> Unit,
     secondaryButton: @Composable (() -> Unit)? = null,
+    secondaryError: String? = null,
     modifier: Modifier = Modifier
 ) {
     Column(
@@ -61,6 +62,17 @@ fun CourseSimpleSuccessLayout(
             if (secondaryButton != null) {
                 Spacer(Modifier.height(8.dp))
                 secondaryButton()
+                if (secondaryError != null) {
+                    Spacer(Modifier.height(6.dp))
+                    Text(
+                        text = secondaryError,
+                        modifier = Modifier
+                            .fillMaxWidth(),
+                        textAlign = TextAlign.Center,
+                        style = MaterialTheme.typography.labelSmall,
+                        color = MaterialTheme.colorScheme.error
+                    )
+                }
             }
 
             Spacer(Modifier.height(8.dp))

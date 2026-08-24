@@ -2,6 +2,7 @@ package ru.missclick.core.data.auth
 
 import io.ktor.client.HttpClient
 import ru.missclick.core.data.dto.requests.RegisterRequest
+import ru.missclick.core.data.dto.requests.EmailRequest
 import ru.missclick.core.data.networking.post
 import ru.missclick.core.domain.auth.AuthService
 import ru.missclick.core.domain.util.DataError
@@ -24,4 +25,15 @@ class KtorAuthService(
             )
         )
     }
+
+    override suspend fun resendVerificationEmail(email: String): EmptyResult<DataError.Remote> {
+        return httpClient.post(
+            route = "/auth/resend-verification",
+            body = EmailRequest(
+                email = email
+            )
+        )
+    }
+
+
 }

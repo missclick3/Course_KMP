@@ -4,6 +4,7 @@
     <string name="account_successfully_created">Account successfully created</string>
     <string name="verification_email_send_to_x">We've sent verification emailt to %1$s</string>
     <string name="resend_verification_email">Resend verification email</string>
+    <string name="resent_verification_email">Successfully resent verification email</string>
     <string name="username">Username</string>
     <string name="username_placeholder">Chirp</string>
     <string name="username_hint">Use between 3 and 20 characters for your username</string>
