@@ -1,5 +1,5 @@
 import SwiftUI
-import Shared
+import SharedUI
 
 @main
 struct iOSApp: App {
@@ -11,6 +11,9 @@ struct iOSApp: App {
     var body: some Scene {
         WindowGroup {
             ContentView()
+                .onOpenURL { url in
+                    ExternalUriHandler.shared.onNewUri(uri: url.absoluteString)
+                }
         }
     }
 }

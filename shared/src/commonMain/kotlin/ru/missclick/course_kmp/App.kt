@@ -13,6 +13,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.navigation.compose.rememberNavController
 import org.jetbrains.compose.resources.painterResource
 
 import course_kmp.shared.generated.resources.Res
@@ -22,12 +23,15 @@ import ru.missclick.auth.presentation.register.RegisterAction
 import ru.missclick.auth.presentation.register.RegisterRoot
 import ru.missclick.auth.presentation.registerSuccess.RegisterSuccessRoot
 import ru.missclick.core.designsystem.theme.CourseTheme
+import ru.missclick.course_kmp.navigation.DeepLinkListener
 import ru.missclick.course_kmp.navigation.NavigationRoot
 
 @Composable
 @Preview
 fun App() {
+    val navController = rememberNavController()
+    DeepLinkListener(navController)
     CourseTheme {
-        NavigationRoot()
+        NavigationRoot(navController)
     }
 }
