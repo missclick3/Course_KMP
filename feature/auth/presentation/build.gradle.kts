@@ -19,6 +19,7 @@ kotlin {
                 implementation(projects.core.presentation)
 
                 implementation(compose.components.resources)
+                implementation(libs.bundles.koin.common)
             }
         }
 

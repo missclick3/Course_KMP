@@ -24,6 +24,7 @@ import course_kmp.feature.auth.presentation.generated.resources.username_hint
 import course_kmp.feature.auth.presentation.generated.resources.username_placeholder
 import course_kmp.feature.auth.presentation.generated.resources.welcome_to_chirp
 import org.jetbrains.compose.resources.stringResource
+import org.koin.compose.viewmodel.koinViewModel
 import ru.missclick.core.designsystem.components.brand.CourseBrandLogo
 import ru.missclick.core.designsystem.components.buttons.CourseButton
 import ru.missclick.core.designsystem.components.buttons.CourseButtonStyle
@@ -36,7 +37,7 @@ import ru.missclick.core.presentation.util.ObserveAsEvents
 
 @Composable
 fun RegisterRoot(
-    viewModel: RegisterViewModel = viewModel(),
+    viewModel: RegisterViewModel = koinViewModel(),
     onRegisterSuccess: (String) -> Unit
 ) {
     val state by viewModel.state.collectAsStateWithLifecycle()
