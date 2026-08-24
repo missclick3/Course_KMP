@@ -55,6 +55,8 @@ kotlin {
             implementation(libs.jetbrains.lifecycle.viewmodel.compose)
             implementation(libs.jetbrains.lifecycle.compose)
             implementation(libs.bundles.koin.common)
+
+            implementation(libs.jetbrains.compose.navigation)
         }
     }
 }

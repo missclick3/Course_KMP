@@ -22,11 +22,12 @@ import ru.missclick.auth.presentation.register.RegisterAction
 import ru.missclick.auth.presentation.register.RegisterRoot
 import ru.missclick.auth.presentation.registerSuccess.RegisterSuccessRoot
 import ru.missclick.core.designsystem.theme.CourseTheme
+import ru.missclick.course_kmp.navigation.NavigationRoot
 
 @Composable
 @Preview
 fun App() {
     CourseTheme {
-        RegisterSuccessRoot()
+        NavigationRoot()
     }
 }
