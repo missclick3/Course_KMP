@@ -26,6 +26,8 @@ import ru.missclick.core.designsystem.theme.CourseTheme
 @Preview
 fun App() {
     CourseTheme {
-        RegisterRoot()
+        RegisterRoot(
+            onRegisterSuccess = {}
+        )
     }
 }

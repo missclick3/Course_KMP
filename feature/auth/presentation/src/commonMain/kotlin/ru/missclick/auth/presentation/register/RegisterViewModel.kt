@@ -6,16 +6,29 @@ import course_kmp.feature.auth.presentation.generated.resources.Res
 import course_kmp.feature.auth.presentation.generated.resources.error_account_exists
 import course_kmp.feature.auth.presentation.generated.resources.error_invalid_passport
 import course_kmp.feature.auth.presentation.generated.resources.error_not_valid_email
+import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.onStart
+import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
+import kotlinx.coroutines.launch
 import ru.missclick.auth.domain.EmailValidator
+import ru.missclick.core.domain.auth.AuthService
+import ru.missclick.core.domain.util.DataError
+import ru.missclick.core.domain.util.onFailure
+import ru.missclick.core.domain.util.onSuccess
 import ru.missclick.core.domain.validation.PasswordValidator
 import ru.missclick.core.presentation.util.UiText
+import ru.missclick.core.presentation.util.toUiText
 
-class RegisterViewModel : ViewModel() {
+class RegisterViewModel(
+    private val authService: AuthService
+) : ViewModel() {
+
+    private val eventChannel = Channel<RegisterEvent>()
+    val events = eventChannel.receiveAsFlow()
 
     private var hasLoadedInitialData = false
 
@@ -35,8 +48,56 @@ class RegisterViewModel : ViewModel() {
 
     fun onAction(action: RegisterAction) {
         when (action) {
-            RegisterAction.OnLoginClick -> validateFormInput()
+            RegisterAction.OnLoginClick -> Unit
+            RegisterAction.OnRegisterClick -> register()
+            RegisterAction.OnTogglePasswordVisibility -> {
+                _state.update {
+                    it.copy(
+                        isPasswordVisible = !it.isPasswordVisible
+                    )
+                }
+            }
             else -> Unit
+        }
+    }
+
+    private fun register() {
+        if (!validateFormInput()) {
+            return
+        }
+
+        viewModelScope.launch {
+            _state.update {
+                it.copy(
+                    isRegistering = true
+                )
+            }
+
+            val currentState= state.value
+            val email = currentState.emailTextState.text.toString()
+            val username = currentState.usernameTextState.text.toString()
+            val password = currentState.passwordTextState.text.toString()
+
+            authService.register(
+                email = email,
+                username = username,
+                password = password
+            ).onSuccess {
+                _state.update {
+                    it.copy(isRegistering = false)
+                }
+            }.onFailure { error ->
+                val registrationError = when (error) {
+                    DataError.Remote.CONFLICT -> UiText.Resource(Res.string.error_account_exists)
+                    else -> error.toUiText()
+                }
+                _state.update {
+                    it.copy(
+                        isRegistering = false,
+                        registrationError = registrationError
+                    )
+                }
+            }
         }
     }
 
