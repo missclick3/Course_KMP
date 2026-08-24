@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<resources>
+    <string name="welcome_to_chirp">Welcome to Chirp!</string>
+    <string name="account_successfully_created">Account successfully created</string>
+    <string name="verification_email_send_to_x">We've sent verification emailt to %1$s</string>
+    <string name="resend_verification_email">Resend verification email</string>
+    <string name="resent_verification_email">Successfully resent verification email</string>
+    <string name="verifying_account">Verifying account...</string>
+    <string name="email_verified_successfully">Email verified successfully!</string>
+    <string name="email_verified_successfully_desc">Your email has been verified. You can now log in with your credentials.</string>
+    <string name="email_verification_failed">Failed to verify your email!</string>
+    <string name="email_verification_failed_desc">Unable to verify your email. Maybe the link is invalid or has expired</string>
+    <string name="close">Close</string>
+    <string name="username">Username</string>
+    <string name="username_placeholder">Chirp</string>
+    <string name="username_hint">Use between 3 and 20 characters for your username</string>
+    <string name="password">Password</string>
+    <string name="email">Email</string>
+    <string name="register">Register</string>
+    <string name="login">Login</string>
+    <string name="email_placeholder">hello@mail.com</string>
+    <string name="password_hint">Use 9+ characters, at least one digit and one uppercase letter</string>
+    <string name="error_account_exists">Username already exists</string>
+    <string name="error_not_valid_email">This is not a valid email</string>
+    <string name="error_invalid_passport">Password must be at least 9 characters and include one digit and one uppercase letter</string>
+</resources>
