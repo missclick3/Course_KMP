@@ -6,6 +6,7 @@ import androidx.navigation.compose.composable
 import androidx.navigation.navDeepLink
 import androidx.navigation.navigation
 import ru.missclick.auth.presentation.emailVerification.EmailVerificationRoot
+import ru.missclick.auth.presentation.forgotPassword.ForgotPasswordRoot
 import ru.missclick.auth.presentation.login.LoginRoot
 import ru.missclick.auth.presentation.register.RegisterRoot
 import ru.missclick.auth.presentation.registerSuccess.RegisterSuccessRoot
@@ -77,7 +78,7 @@ fun NavGraphBuilder.authGraph(
             )
         }
 
-        composable<AuthGraphRoutes.Login>() {
+        composable<AuthGraphRoutes.Login> {
             LoginRoot(
                 onLoginSuccess = onLoginSuccess,
                 onForgotPasswordClick = {
@@ -88,6 +89,10 @@ fun NavGraphBuilder.authGraph(
                 }
 
             )
+        }
+
+        composable<AuthGraphRoutes.ForgotPassword> {
+            ForgotPasswordRoot()
         }
     }
 }
