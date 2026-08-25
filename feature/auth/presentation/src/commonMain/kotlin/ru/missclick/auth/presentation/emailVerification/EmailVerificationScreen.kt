@@ -17,7 +17,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import androidx.lifecycle.viewmodel.compose.viewModel
 import course_kmp.feature.auth.presentation.generated.resources.Res
 import course_kmp.feature.auth.presentation.generated.resources.close
 import course_kmp.feature.auth.presentation.generated.resources.email_verification_failed
@@ -39,13 +38,21 @@ import ru.missclick.core.designsystem.theme.extended
 
 @Composable
 fun EmailVerificationRoot(
-    viewModel: EmailVerificationViewModel = koinViewModel()
+    viewModel: EmailVerificationViewModel = koinViewModel(),
+    onLoginClick: () -> Unit,
+    onCloseClick: () -> Unit
 ) {
     val state by viewModel.state.collectAsStateWithLifecycle()
 
     EmailVerificationScreen(
         state = state,
-        onAction = viewModel::onAction
+        onAction = { action ->
+            when (action) {
+                EmailVerificationAction.OnCloseClick -> onCloseClick()
+                EmailVerificationAction.OnLoginClick -> onLoginClick()
+            }
+            viewModel.onAction(action)
+        }
     )
 }
 

@@ -8,10 +8,10 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import androidx.lifecycle.viewmodel.compose.viewModel
 import course_kmp.feature.auth.presentation.generated.resources.Res
 import course_kmp.feature.auth.presentation.generated.resources.email
 import course_kmp.feature.auth.presentation.generated.resources.email_placeholder
@@ -38,7 +38,8 @@ import ru.missclick.core.presentation.util.ObserveAsEvents
 @Composable
 fun RegisterRoot(
     viewModel: RegisterViewModel = koinViewModel(),
-    onRegisterSuccess: (String) -> Unit
+    onRegisterSuccess: (String) -> Unit,
+    onLoginClick: () -> Unit,
 ) {
     val state by viewModel.state.collectAsStateWithLifecycle()
 
@@ -54,7 +55,13 @@ fun RegisterRoot(
 
     RegisterScreen(
         state = state,
-        onAction = viewModel::onAction,
+        onAction = { action ->
+            when (action) {
+                is RegisterAction.OnLoginClick -> onLoginClick()
+                else -> Unit
+            }
+            viewModel.onAction(action)
+        },
         snackbarHostState = snackbarHostState
     )
 }
@@ -93,6 +100,7 @@ fun RegisterScreen(
                 title = stringResource(Res.string.email),
                 supportingText = state.emailError?.asString(),
                 isError = state.emailError != null,
+                keyboardType = KeyboardType.Email,
                 onFocusChanged = { isFocused->
                     if (isFocused) {
                         onAction(RegisterAction.OnInputTextFocusGain)
