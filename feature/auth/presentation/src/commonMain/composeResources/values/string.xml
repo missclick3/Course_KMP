@@ -12,6 +12,7 @@
     <string name="email_verification_failed">Failed to verify your email!</string>
     <string name="email_verification_failed_desc">Unable to verify your email. Maybe the link is invalid or has expired</string>
     <string name="close">Close</string>
+    <string name="submit">Submit</string>
     <string name="username">Username</string>
     <string name="forgot_password">Forgot password?</string>
     <string name="create_account">Create account</string>
@@ -28,4 +29,7 @@
     <string name="error_invalid_passport">Password must be at least 9 characters and include one digit and one uppercase letter</string>
     <string name="error_invalid_credentials">Email or password are incorrect</string>
     <string name="error_email_not_verified">Unable to login because your email isn't verified</string>
+    <string name="forgot_password_email_sent_successfully">
+        We've successfully emailed you with a link to reset your password
+    </string>
 </resources>
