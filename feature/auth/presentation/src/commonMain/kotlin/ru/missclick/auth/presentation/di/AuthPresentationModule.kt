@@ -7,6 +7,7 @@ import ru.missclick.auth.presentation.forgotPassword.ForgotPasswordViewModel
 import ru.missclick.auth.presentation.login.LoginViewModel
 import ru.missclick.auth.presentation.register.RegisterViewModel
 import ru.missclick.auth.presentation.registerSuccess.RegisterSuccessViewModel
+import ru.missclick.auth.presentation.resetPassword.ResetPasswordViewModel
 
 val authPresentationModule = module {
     viewModelOf(::RegisterViewModel)
@@ -14,4 +15,5 @@ val authPresentationModule = module {
     viewModelOf(::EmailVerificationViewModel)
     viewModelOf(::LoginViewModel)
     viewModelOf(::ForgotPasswordViewModel)
+    viewModelOf(::ResetPasswordViewModel)
 }

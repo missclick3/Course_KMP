@@ -2,6 +2,8 @@
 <resources>
     <string name="welcome_to_chirp">Welcome to Chirp!</string>
     <string name="welcome_back">Welcome back!</string>
+    <string name="set_new_password">Set new password</string>
+    <string name="new_password">New password</string>
     <string name="account_successfully_created">Account successfully created</string>
     <string name="verification_email_send_to_x">We've sent verification emailt to %1$s</string>
     <string name="resend_verification_email">Resend verification email</string>
@@ -31,5 +33,11 @@
     <string name="error_email_not_verified">Unable to login because your email isn't verified</string>
     <string name="forgot_password_email_sent_successfully">
         We've successfully emailed you with a link to reset your password
+    </string>
+    <string name="error_reset_password_token_invalid">
+        It seems like reset password link is not valid or has expired. Please request new email
+    </string>
+    <string name="reset_password_successfully">
+        Your password has successfully been changed. You can now log in with your new password
     </string>
 </resources>
