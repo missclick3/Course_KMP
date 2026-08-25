@@ -18,3 +18,17 @@ fun UserSerializable.toDomain() = User(
     hasVerifiedEmail = hasVerifiedEmail,
     profilePictureUrl = profilePictureUrl
 )
+
+fun AuthInfo.toSerializable() = AuthInfoSerializable(
+    accessToken = accessToken,
+    refreshToken = refreshToken,
+    user = user.toSerializable()
+)
+
+fun User.toSerializable() = UserSerializable(
+    id = id,
+    email = email,
+    username = username,
+    hasVerifiedEmail = hasVerifiedEmail,
+    profilePictureUrl = profilePictureUrl
+)

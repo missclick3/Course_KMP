@@ -20,6 +20,7 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import ru.missclick.auth.domain.EmailValidator
 import ru.missclick.core.domain.auth.AuthService
+import ru.missclick.core.domain.auth.SessionStorage
 import ru.missclick.core.domain.util.DataError
 import ru.missclick.core.domain.util.onFailure
 import ru.missclick.core.domain.util.onSuccess
@@ -27,7 +28,8 @@ import ru.missclick.core.presentation.util.UiText
 import ru.missclick.core.presentation.util.toUiText
 
 class LoginViewModel(
-    private val authService: AuthService
+    private val authService: AuthService,
+    private val sessionStorage: SessionStorage,
 ) : ViewModel() {
 
     private var hasLoadedInitialData = false
@@ -109,10 +111,11 @@ class LoginViewModel(
                     password = password
                 )
                 .onSuccess { authInfo ->
-                    eventChannel.send(LoginEvent.Success)
+                    sessionStorage.set(authInfo)
                     _state.update {
                         it.copy(isLogging = false)
                     }
+                    eventChannel.send(LoginEvent.Success)
                 }
                 .onFailure { error ->
                     val errorMessage = when(error) {
