@@ -28,6 +28,7 @@ import ru.missclick.auth.presentation.register.RegisterRoot
 import ru.missclick.auth.presentation.registerSuccess.RegisterSuccessRoot
 import ru.missclick.chat.presentation.chat_list.ChatListRoute
 import ru.missclick.core.designsystem.theme.CourseTheme
+import ru.missclick.core.presentation.util.ObserveAsEvents
 import ru.missclick.course_kmp.navigation.DeepLinkListener
 import ru.missclick.course_kmp.navigation.NavigationRoot
 
@@ -45,6 +46,18 @@ fun App(
     LaunchedEffect(state.isCheckingAuth) {
         if (!state.isCheckingAuth) {
             onAuthenticationChecked()
+        }
+    }
+
+    ObserveAsEvents(viewModel.events) { event ->
+        when (event) {
+            MainEvent.OnSessionExpired -> {
+                navController.navigate(AuthGraphRoutes.Graph) {
+                    popUpTo(AuthGraphRoutes.Graph) {
+                        inclusive = false
+                    }
+                }
+            }
         }
     }
 
