@@ -2,8 +2,14 @@ package ru.missclick.core.domain.auth
 
 import ru.missclick.core.domain.util.DataError
 import ru.missclick.core.domain.util.EmptyResult
+import ru.missclick.core.domain.util.Result
 
 interface AuthService {
+    suspend fun login(
+        email: String,
+        password: String
+    ): Result<AuthInfo, DataError.Remote>
+
     suspend fun register(
         email: String,
         username: String,

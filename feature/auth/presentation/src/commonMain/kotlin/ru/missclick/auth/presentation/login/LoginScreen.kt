@@ -32,6 +32,7 @@ import ru.missclick.core.designsystem.components.layouts.CourseAdaptiveFormLayou
 import ru.missclick.core.designsystem.components.textfields.CoursePasswordTextField
 import ru.missclick.core.designsystem.components.textfields.CourseTextField
 import ru.missclick.core.designsystem.theme.CourseTheme
+import ru.missclick.core.presentation.util.ObserveAsEvents
 
 @Composable
 fun LoginRoot(
@@ -41,6 +42,13 @@ fun LoginRoot(
     onCreateAccountClick: () -> Unit
 ) {
     val state by viewModel.state.collectAsStateWithLifecycle()
+
+
+    ObserveAsEvents(viewModel.events) { event ->
+        when (event) {
+            LoginEvent.Success -> onLoginSuccess()
+        }
+    }
 
     LoginScreen(
         state = state,

@@ -1,17 +1,38 @@
 package ru.missclick.core.data.auth
 
 import io.ktor.client.HttpClient
+import ru.missclick.core.data.dto.AuthInfoSerializable
 import ru.missclick.core.data.dto.requests.RegisterRequest
 import ru.missclick.core.data.dto.requests.EmailRequest
+import ru.missclick.core.data.dto.requests.LoginRequest
+import ru.missclick.core.data.mappers.toDomain
 import ru.missclick.core.data.networking.get
 import ru.missclick.core.data.networking.post
+import ru.missclick.core.domain.auth.AuthInfo
 import ru.missclick.core.domain.auth.AuthService
 import ru.missclick.core.domain.util.DataError
 import ru.missclick.core.domain.util.EmptyResult
+import ru.missclick.core.domain.util.Result
+import ru.missclick.core.domain.util.map
 
 class KtorAuthService(
     private val httpClient: HttpClient
 ): AuthService {
+    override suspend fun login(
+        email: String,
+        password: String
+    ): Result<AuthInfo, DataError.Remote> {
+        return httpClient.post<LoginRequest, AuthInfoSerializable>(
+            route = "/auth/login",
+            body = LoginRequest(
+                email = email,
+                password = password
+            )
+        ).map { authInfoSerializable ->
+            authInfoSerializable.toDomain()
+        }
+    }
+
     override suspend fun register(
         email: String,
         username: String,
