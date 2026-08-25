@@ -12,7 +12,6 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import androidx.lifecycle.viewmodel.compose.viewModel
 import course_kmp.feature.auth.presentation.generated.resources.Res
 import course_kmp.feature.auth.presentation.generated.resources.email
 import course_kmp.feature.auth.presentation.generated.resources.email_placeholder
