@@ -19,6 +19,9 @@ kotlin {
                 implementation(compose.components.uiToolingPreview)
 
                 implementation(projects.core.presentation)
+
+                implementation(libs.coil.compose)
+                implementation(libs.coil.network.ktor)
             }
         }
 
