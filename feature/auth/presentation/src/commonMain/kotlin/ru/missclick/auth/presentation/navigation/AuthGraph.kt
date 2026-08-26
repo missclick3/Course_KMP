@@ -10,6 +10,7 @@ import ru.missclick.auth.presentation.forgotPassword.ForgotPasswordRoot
 import ru.missclick.auth.presentation.login.LoginRoot
 import ru.missclick.auth.presentation.register.RegisterRoot
 import ru.missclick.auth.presentation.registerSuccess.RegisterSuccessRoot
+import ru.missclick.auth.presentation.resetPassword.ResetPasswordRoot
 
 fun NavGraphBuilder.authGraph(
     navController: NavController,
@@ -93,6 +94,19 @@ fun NavGraphBuilder.authGraph(
 
         composable<AuthGraphRoutes.ForgotPassword> {
             ForgotPasswordRoot()
+        }
+
+        composable<AuthGraphRoutes.ResetPassword>(
+            deepLinks = listOf(
+                navDeepLink {
+                    this.uriPattern = "https://chirp.pl-coding.com/api/auth/reset-password?token={token}"
+                },
+                navDeepLink {
+                    this.uriPattern = "chirp://chirp.pl-coding.com/api/auth/reset-password?token={token}"
+                }
+            )
+        ) {
+            ResetPasswordRoot()
         }
     }
 }

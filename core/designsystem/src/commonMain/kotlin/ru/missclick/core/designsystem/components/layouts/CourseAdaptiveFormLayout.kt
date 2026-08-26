@@ -31,6 +31,7 @@ import ru.missclick.core.designsystem.components.brand.CourseBrandLogo
 import ru.missclick.core.designsystem.theme.CourseTheme
 import ru.missclick.core.designsystem.theme.extended
 import ru.missclick.core.presentation.util.DeviceConfiguration
+import ru.missclick.core.presentation.util.clearFocusOnTap
 import ru.missclick.core.presentation.util.currentDeviceConfiguration
 
 @Composable
@@ -52,6 +53,7 @@ fun CourseAdaptiveFormLayout(
         DeviceConfiguration.MOBILE_PORTRAIT -> {
             CourseSurface(
                 modifier = Modifier
+                    .clearFocusOnTap()
                     .consumeWindowInsets(WindowInsets.navigationBars)
                     .consumeWindowInsets(WindowInsets.displayCutout),
                 header = {

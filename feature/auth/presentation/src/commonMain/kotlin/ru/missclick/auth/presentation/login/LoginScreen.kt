@@ -28,6 +28,7 @@ import ru.missclick.core.designsystem.components.brand.CourseBrandLogo
 import ru.missclick.core.designsystem.components.buttons.CourseButton
 import ru.missclick.core.designsystem.components.buttons.CourseButtonStyle
 import ru.missclick.core.designsystem.components.layouts.CourseAdaptiveFormLayout
+import ru.missclick.core.designsystem.components.layouts.CourseSnackbarScaffold
 import ru.missclick.core.designsystem.components.textfields.CoursePasswordTextField
 import ru.missclick.core.designsystem.components.textfields.CourseTextField
 import ru.missclick.core.designsystem.theme.CourseTheme
@@ -67,62 +68,64 @@ fun LoginScreen(
     state: LoginState,
     onAction: (LoginAction) -> Unit,
 ) {
-    CourseAdaptiveFormLayout(
-        headerText = stringResource(Res.string.welcome_back),
-        errorText = state.error?.asString(),
-        logo = {
-            CourseBrandLogo()
-        }
-    ) {
-        CourseTextField(
-            state = state.emailTextFieldState,
-            placeholder = stringResource(Res.string.email_placeholder),
-            title = stringResource(Res.string.email),
-            keyboardType = KeyboardType.Email,
-            singleLine = true,
-            modifier = Modifier.fillMaxWidth()
-        )
-        Spacer(Modifier.height(16.dp))
-        CoursePasswordTextField(
-            state = state.passwordTextFieldState,
-            placeholder = stringResource(Res.string.password),
-            title = stringResource(Res.string.password),
-            isPasswordVisible = state.isPasswordVisible,
-            onToggleVisibilityClick = {
-                onAction(LoginAction.OnTogglePasswordVisibility)
-            },
-        )
-        Spacer(modifier = Modifier.height(8.dp))
-        Text(
-            text = stringResource(Res.string.forgot_password),
-            style = MaterialTheme.typography.titleSmall,
-            color = MaterialTheme.colorScheme.tertiary,
-            modifier = Modifier
-                .align(Alignment.End)
-                .clickable {
-                    onAction(LoginAction.OnForgotPasswordClick)
-                }
-        )
-        Spacer(Modifier.height(24.dp))
+    CourseSnackbarScaffold {
+        CourseAdaptiveFormLayout(
+            headerText = stringResource(Res.string.welcome_back),
+            errorText = state.error?.asString(),
+            logo = {
+                CourseBrandLogo()
+            }
+        ) {
+            CourseTextField(
+                state = state.emailTextFieldState,
+                placeholder = stringResource(Res.string.email_placeholder),
+                title = stringResource(Res.string.email),
+                keyboardType = KeyboardType.Email,
+                singleLine = true,
+                modifier = Modifier.fillMaxWidth()
+            )
+            Spacer(Modifier.height(16.dp))
+            CoursePasswordTextField(
+                state = state.passwordTextFieldState,
+                placeholder = stringResource(Res.string.password),
+                title = stringResource(Res.string.password),
+                isPasswordVisible = state.isPasswordVisible,
+                onToggleVisibilityClick = {
+                    onAction(LoginAction.OnTogglePasswordVisibility)
+                },
+            )
+            Spacer(modifier = Modifier.height(8.dp))
+            Text(
+                text = stringResource(Res.string.forgot_password),
+                style = MaterialTheme.typography.titleSmall,
+                color = MaterialTheme.colorScheme.tertiary,
+                modifier = Modifier
+                    .align(Alignment.End)
+                    .clickable {
+                        onAction(LoginAction.OnForgotPasswordClick)
+                    }
+            )
+            Spacer(Modifier.height(24.dp))
 
-        CourseButton(
-            text = stringResource(Res.string.login),
-            onClick = {
-                onAction(LoginAction.OnLoginClick)
-            },
-            enabled = state.canLogin,
-            isLoading = state.isLogging,
-            modifier = Modifier.fillMaxWidth()
-        )
-        Spacer(Modifier.height(8.dp))
-        CourseButton(
-            text = stringResource(Res.string.create_account),
-            onClick = {
-                onAction(LoginAction.OnSignUpClick)
-            },
-            style = CourseButtonStyle.SECONDARY,
-            modifier = Modifier.fillMaxWidth()
-        )
+            CourseButton(
+                text = stringResource(Res.string.login),
+                onClick = {
+                    onAction(LoginAction.OnLoginClick)
+                },
+                enabled = state.canLogin,
+                isLoading = state.isLogging,
+                modifier = Modifier.fillMaxWidth()
+            )
+            Spacer(Modifier.height(8.dp))
+            CourseButton(
+                text = stringResource(Res.string.create_account),
+                onClick = {
+                    onAction(LoginAction.OnSignUpClick)
+                },
+                style = CourseButtonStyle.SECONDARY,
+                modifier = Modifier.fillMaxWidth()
+            )
+        }
     }
 }
 

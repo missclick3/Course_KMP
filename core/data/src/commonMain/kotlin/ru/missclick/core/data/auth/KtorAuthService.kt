@@ -5,6 +5,7 @@ import ru.missclick.core.data.dto.AuthInfoSerializable
 import ru.missclick.core.data.dto.requests.RegisterRequest
 import ru.missclick.core.data.dto.requests.EmailRequest
 import ru.missclick.core.data.dto.requests.LoginRequest
+import ru.missclick.core.data.dto.requests.ResetPasswordRequest
 import ru.missclick.core.data.mappers.toDomain
 import ru.missclick.core.data.networking.get
 import ru.missclick.core.data.networking.post
@@ -68,6 +69,19 @@ class KtorAuthService(
         return httpClient.post<EmailRequest, Unit>(
             route = "/auth/forgot-password",
             body = EmailRequest(email)
+        )
+    }
+
+    override suspend fun resetPassword(
+        newPassword: String,
+        token: String
+    ): EmptyResult<DataError.Remote> {
+        return httpClient.post(
+            route = "/aith/reset-password",
+            body = ResetPasswordRequest(
+                newPassword = newPassword,
+                token = token
+            )
         )
     }
 }
