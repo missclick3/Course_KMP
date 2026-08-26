@@ -33,6 +33,7 @@ import ru.missclick.core.designsystem.components.buttons.CourseButton
 import ru.missclick.core.designsystem.components.buttons.CourseButtonStyle
 import ru.missclick.core.designsystem.components.layouts.CourseAdaptiveResultLayout
 import ru.missclick.core.designsystem.components.layouts.CourseSimpleResultLayout
+import ru.missclick.core.designsystem.components.layouts.CourseSnackbarScaffold
 import ru.missclick.core.designsystem.theme.CourseTheme
 import ru.missclick.core.designsystem.theme.extended
 
@@ -61,52 +62,54 @@ fun EmailVerificationScreen(
     state: EmailVerificationState,
     onAction: (EmailVerificationAction) -> Unit,
 ) {
-    CourseAdaptiveResultLayout {
-        when {
-            state.isVerifying -> {
-                VerifyingContent(Modifier.fillMaxWidth())
-            }
-            state.isVerified -> {
-                CourseSimpleResultLayout(
-                    title = stringResource(Res.string.email_verified_successfully),
-                    description = stringResource(Res.string.email_verified_successfully_desc),
-                    icon = {
-                        CourseSuccessIcon()
-                    },
-                    primaryButton = {
-                        CourseButton(
-                            text = stringResource(Res.string.login),
-                            onClick = {
-                                onAction(EmailVerificationAction.OnLoginClick)
-                            },
-                            modifier = Modifier.fillMaxWidth()
-                        )
-                    }
-                )
-            }
-            else -> {
-                CourseSimpleResultLayout(
-                    title = stringResource(Res.string.email_verification_failed),
-                    description = stringResource(Res.string.email_verification_failed_desc),
-                    icon = {
-                        Spacer(Modifier.height(32.dp))
-                        CourseFailureIcon(
-                            modifier = Modifier
-                                .size(80.dp)
-                        )
-                        Spacer(Modifier.height(32.dp))
-                    },
-                    primaryButton = {
-                        CourseButton(
-                            text = stringResource(Res.string.close),
-                            onClick = {
-                                onAction(EmailVerificationAction.OnCloseClick)
-                            },
-                            modifier = Modifier.fillMaxWidth(),
-                            style = CourseButtonStyle.SECONDARY
-                        )
-                    }
-                )
+    CourseSnackbarScaffold {
+        CourseAdaptiveResultLayout {
+            when {
+                state.isVerifying -> {
+                    VerifyingContent(Modifier.fillMaxWidth())
+                }
+                state.isVerified -> {
+                    CourseSimpleResultLayout(
+                        title = stringResource(Res.string.email_verified_successfully),
+                        description = stringResource(Res.string.email_verified_successfully_desc),
+                        icon = {
+                            CourseSuccessIcon()
+                        },
+                        primaryButton = {
+                            CourseButton(
+                                text = stringResource(Res.string.login),
+                                onClick = {
+                                    onAction(EmailVerificationAction.OnLoginClick)
+                                },
+                                modifier = Modifier.fillMaxWidth()
+                            )
+                        }
+                    )
+                }
+                else -> {
+                    CourseSimpleResultLayout(
+                        title = stringResource(Res.string.email_verification_failed),
+                        description = stringResource(Res.string.email_verification_failed_desc),
+                        icon = {
+                            Spacer(Modifier.height(32.dp))
+                            CourseFailureIcon(
+                                modifier = Modifier
+                                    .size(80.dp)
+                            )
+                            Spacer(Modifier.height(32.dp))
+                        },
+                        primaryButton = {
+                            CourseButton(
+                                text = stringResource(Res.string.close),
+                                onClick = {
+                                    onAction(EmailVerificationAction.OnCloseClick)
+                                },
+                                modifier = Modifier.fillMaxWidth(),
+                                style = CourseButtonStyle.SECONDARY
+                            )
+                        }
+                    )
+                }
             }
         }
     }
