@@ -73,8 +73,8 @@ fun ResetPasswordScreen(
                 enabled = !state.isLoading && state.canSubmit,
                 isLoading = state.isLoading
             )
-            Spacer(Modifier.height(8.dp))
-            if (state.isResetSuccessful){
+            if (state.isResetSuccessful) {
+                Spacer(Modifier.height(8.dp))
                 Text(
                     text = stringResource(Res.string.reset_password_successfully),
                     style = MaterialTheme.typography.labelSmall,

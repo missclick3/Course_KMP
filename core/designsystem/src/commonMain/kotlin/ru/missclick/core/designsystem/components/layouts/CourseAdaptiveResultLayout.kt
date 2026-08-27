@@ -66,7 +66,7 @@ fun CourseAdaptiveResultLayout(
                         .fillMaxWidth()
                         .clip(RoundedCornerShape(32.dp))
                         .background(MaterialTheme.colorScheme.surface)
-                        .padding(24.dp)
+                        .padding(horizontal = 24.dp)
                         .verticalScroll(rememberScrollState()),
                     verticalArrangement = Arrangement.spacedBy(24.dp),
                     horizontalAlignment = Alignment.CenterHorizontally

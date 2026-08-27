@@ -11,7 +11,7 @@ import ru.missclick.core.designsystem.theme.CourseTheme
 
 @Composable
 fun CourseStackedAvatar(
-    avatars: List<AvatarUi>,
+    avatars: List<ChatParticipantUi>,
     modifier: Modifier = Modifier,
     size: AvatarSize = AvatarSize.SMALL,
     maxVisible: Int = 2,
@@ -51,17 +51,17 @@ fun CourseStackedAvatarPreview() {
     CourseTheme {
         CourseStackedAvatar(
             avatars = listOf(
-                AvatarUi(
+                ChatParticipantUi(
                     "1",
                     username = "Alex",
                     initials = "AA"
                 ),
-                AvatarUi(
+                ChatParticipantUi(
                     "2",
                     username = "Ann",
                     initials = "AV"
                 ),
-                AvatarUi(
+                ChatParticipantUi(
                     "3",
                     username = "Alex",
                     initials = "AA"

@@ -24,7 +24,9 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import kotlinx.coroutines.launch
 import org.koin.compose.viewmodel.koinViewModel
+import ru.missclick.chat.presentation.createChat.CreateChatRoot
 import ru.missclick.core.designsystem.theme.extended
+import ru.missclick.core.presentation.util.DialogSheetScopedViewModel
 
 @OptIn(ExperimentalMaterial3AdaptiveApi::class, ExperimentalComposeUiApi::class)
 @Composable
@@ -60,6 +62,7 @@ fun ChatListDetailAdaptiveLayout(
                             text = "Chat $chatIndex",
                             modifier = Modifier
                                 .clickable {
+                                    chatListDetailViewModel.onAction(ChatListDetailAction.OnCreateChatClick)
                                     chatListDetailViewModel.onAction(
                                         ChatListDetailAction.OnChatClick(chatIndex.toString())
                                     )
@@ -91,4 +94,10 @@ fun ChatListDetailAdaptiveLayout(
             }
         }
     )
+
+    DialogSheetScopedViewModel(
+        visible = sharedState.dialogState is DialogState.CreateChat
+    ) {
+        CreateChatRoot()
+    }
 }
