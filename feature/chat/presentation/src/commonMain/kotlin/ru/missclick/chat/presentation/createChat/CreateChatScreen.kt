@@ -39,18 +39,23 @@ import ru.missclick.core.presentation.util.currentDeviceConfiguration
 
 @Composable
 fun CreateChatRoot(
+    onDismiss: () -> Unit,
     viewModel: CreateChatViewModel = koinViewModel()
 ) {
     val state by viewModel.state.collectAsStateWithLifecycle()
 
     CourseAdaptiveDialogSheetLayout(
-        onDismiss = {
-            viewModel.onAction(CreateChatAction.OnDismissDialog)
-        }
+        onDismiss = onDismiss
     ) {
         CreateChatScreen(
             state = state,
-            onAction = viewModel::onAction
+            onAction = { action ->
+                when (action) {
+                    CreateChatAction.OnDismissDialog -> onDismiss()
+                    else -> Unit
+                }
+                viewModel.onAction(action)
+            }
         )
     }
 }
@@ -96,7 +101,7 @@ fun CreateChatScreen(
                 onAction(CreateChatAction.OnAddClick)
             },
             isSearchEnabled = state.canAddParticipant,
-            isLoading = state.isAddingParticipants,
+            isLoading = state.isSearching,
             modifier = Modifier.fillMaxWidth(),
             error = state.searchError,
             onFocusChanged = {
