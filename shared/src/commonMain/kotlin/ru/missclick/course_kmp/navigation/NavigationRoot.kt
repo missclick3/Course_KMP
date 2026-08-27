@@ -3,11 +3,10 @@ package ru.missclick.course_kmp.navigation
 import androidx.compose.runtime.Composable
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
-import androidx.navigation.compose.composable
 import ru.missclick.auth.presentation.navigation.AuthGraphRoutes
 import ru.missclick.auth.presentation.navigation.authGraph
-import ru.missclick.chat.presentation.chat_list.ChatListRoute
-import ru.missclick.chat.presentation.chat_list.ChatListScreenRoot
+import ru.missclick.chat.presentation.navigation.ChatGraphRoute
+import ru.missclick.chat.presentation.navigation.chatGraph
 
 @Composable
 fun NavigationRoot(
@@ -21,7 +20,7 @@ fun NavigationRoot(
         authGraph(
             navController = navController,
             onLoginSuccess = {
-                navController.navigate(ChatListRoute) {
+                navController.navigate(ChatGraphRoute.Graph) {
                     popUpTo(AuthGraphRoutes.Graph) {
                         inclusive = true
                     }
@@ -29,8 +28,8 @@ fun NavigationRoot(
             }
         )
 
-        composable<ChatListRoute> {
-            ChatListScreenRoot()
-        }
+        chatGraph(
+            navController = navController
+        )
     }
 }
