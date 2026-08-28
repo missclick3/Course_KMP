@@ -52,7 +52,7 @@ fun CourseAdaptiveFormLayout(
     when (configuration) {
         DeviceConfiguration.MOBILE_PORTRAIT -> {
             CourseSurface(
-                modifier = Modifier
+                modifier = modifier
                     .clearFocusOnTap()
                     .consumeWindowInsets(WindowInsets.navigationBars)
                     .consumeWindowInsets(WindowInsets.displayCutout),
@@ -68,13 +68,14 @@ fun CourseAdaptiveFormLayout(
                     headerColor = headerColor,
                     errorText = errorText
                 )
+                Spacer(Modifier.height(24.dp))
                 formContent()
             }
         }
         DeviceConfiguration.MOBILE_LANDSCAPE -> {
             Row(
                 horizontalArrangement = Arrangement.spacedBy(16.dp),
-                modifier = Modifier
+                modifier = modifier
                     .fillMaxSize()
                     .consumeWindowInsets(WindowInsets.displayCutout)
                     .consumeWindowInsets(WindowInsets.navigationBars)
@@ -97,6 +98,7 @@ fun CourseAdaptiveFormLayout(
                 CourseSurface(modifier = Modifier.weight(1f)) {
                     Spacer(Modifier.height(16.dp))
                     formContent()
+                    Spacer(Modifier.height(16.dp))
                 }
             }
         }
@@ -104,10 +106,10 @@ fun CourseAdaptiveFormLayout(
         DeviceConfiguration.TABLET_LANDSCAPE,
         DeviceConfiguration.DESKTOP -> {
             Column(
-                modifier = Modifier
+                modifier = modifier
                     .fillMaxSize()
                     .background(MaterialTheme.colorScheme.background)
-                    .padding(32.dp),
+                    .padding(top = 32.dp),
                 horizontalAlignment = Alignment.CenterHorizontally,
                 verticalArrangement = Arrangement.spacedBy(32.dp)
             ) {

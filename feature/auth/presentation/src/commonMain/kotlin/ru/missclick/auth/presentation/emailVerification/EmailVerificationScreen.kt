@@ -1,5 +1,6 @@
 package ru.missclick.auth.presentation.emailVerification
 
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -125,6 +126,10 @@ fun VerifyingContent(
                 min = 200.dp,
             )
             .padding(16.dp),
+        verticalArrangement = Arrangement.spacedBy(
+            16.dp,
+            Alignment.CenterVertically
+        ),
         horizontalAlignment = Alignment.CenterHorizontally,
     ) {
         CircularProgressIndicator(

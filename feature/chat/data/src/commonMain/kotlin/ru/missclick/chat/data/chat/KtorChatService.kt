@@ -1,0 +1,25 @@
+package ru.missclick.chat.data.chat
+
+import io.ktor.client.HttpClient
+import ru.missclick.chat.data.dto.ChatDto
+import ru.missclick.chat.data.dto.request.CreateChatRequest
+import ru.missclick.chat.data.mappers.toDomain
+import ru.missclick.chat.domain.chat.ChatService
+import ru.missclick.chat.domain.models.Chat
+import ru.missclick.core.data.networking.post
+import ru.missclick.core.domain.util.DataError
+import ru.missclick.core.domain.util.Result
+import ru.missclick.core.domain.util.map
+
+class KtorChatService(
+    private val httpClient: HttpClient
+): ChatService {
+    override suspend fun createChat(otherUserIds: List<String>): Result<Chat, DataError.Remote> {
+        return httpClient.post<CreateChatRequest, ChatDto>(
+            route = "/chat",
+            body = CreateChatRequest(
+                otherUserIds = otherUserIds
+            )
+        ).map { it.toDomain() }
+    }
+}

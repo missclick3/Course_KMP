@@ -8,7 +8,7 @@ import androidx.navigation.compose.rememberNavController
 import org.jetbrains.compose.ui.tooling.preview.Preview
 import org.koin.compose.viewmodel.koinViewModel
 import ru.missclick.auth.presentation.navigation.AuthGraphRoutes
-import ru.missclick.chat.presentation.chat_list.ChatListRoute
+import ru.missclick.chat.presentation.navigation.ChatGraphRoute
 import ru.missclick.core.designsystem.theme.CourseTheme
 import ru.missclick.core.presentation.util.ObserveAsEvents
 import ru.missclick.course_kmp.navigation.DeepLinkListener
@@ -48,7 +48,7 @@ fun App(
             NavigationRoot(
                 navController = navController,
                 startDestination = if (state.isLoggedIn) {
-                    ChatListRoute
+                    ChatGraphRoute.Graph
                 } else {
                     AuthGraphRoutes.Graph
                 },

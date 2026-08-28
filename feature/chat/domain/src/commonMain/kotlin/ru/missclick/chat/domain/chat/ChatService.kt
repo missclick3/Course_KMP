@@ -1,0 +1,11 @@
+package ru.missclick.chat.domain.chat
+
+import ru.missclick.chat.domain.models.Chat
+import ru.missclick.core.domain.util.DataError
+import ru.missclick.core.domain.util.Result
+
+interface ChatService {
+    suspend fun createChat(
+        otherUserIds: List<String>,
+    ): Result<Chat, DataError.Remote>
+}

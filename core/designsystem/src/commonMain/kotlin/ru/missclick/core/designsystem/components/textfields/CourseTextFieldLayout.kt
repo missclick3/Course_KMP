@@ -69,10 +69,10 @@ fun CourseTextFieldLayout(
             Text(
                 text = title,
                 style = MaterialTheme.typography.labelSmall,
-                color = MaterialTheme.colorScheme.secondary
+                color = MaterialTheme.colorScheme.extended.textSecondary
             )
+            Spacer(modifier = Modifier.height(8.dp))
         }
-        Spacer(modifier = Modifier.height(8.dp))
         textField(textFieldStyleModifier, interactionSource)
         supportingText?.let {
             Spacer(modifier = Modifier.height(4.dp))

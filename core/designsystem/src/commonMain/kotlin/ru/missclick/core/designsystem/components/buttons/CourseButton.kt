@@ -86,7 +86,7 @@ fun CourseButton(
             val borderColor = if (enabled) {
                 MaterialTheme.colorScheme.extended.destructiveSecondaryOutline
             } else {
-                MaterialTheme.colorScheme.extended.destructiveSecondaryOutline
+                MaterialTheme.colorScheme.extended.disabledOutline
             }
             BorderStroke(
                 width = 1.dp,
