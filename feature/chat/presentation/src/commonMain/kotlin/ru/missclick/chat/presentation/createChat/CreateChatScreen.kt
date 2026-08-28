@@ -24,6 +24,7 @@ import course_kmp.feature.chat.presentation.generated.resources.cancel
 import course_kmp.feature.chat.presentation.generated.resources.create_chat
 import org.jetbrains.compose.resources.stringResource
 import org.koin.compose.viewmodel.koinViewModel
+import ru.missclick.chat.domain.models.Chat
 import ru.missclick.chat.presentation.components.ChatParticipantSearchTextSection
 import ru.missclick.chat.presentation.components.ChatParticipantsSelectionSection
 import ru.missclick.chat.presentation.components.ManageChatButtonSection
@@ -34,15 +35,23 @@ import ru.missclick.core.designsystem.components.buttons.CourseButtonStyle
 import ru.missclick.core.designsystem.components.dialog.CourseAdaptiveDialogSheetLayout
 import ru.missclick.core.designsystem.theme.CourseTheme
 import ru.missclick.core.presentation.util.DeviceConfiguration
+import ru.missclick.core.presentation.util.ObserveAsEvents
 import ru.missclick.core.presentation.util.clearFocusOnTap
 import ru.missclick.core.presentation.util.currentDeviceConfiguration
 
 @Composable
 fun CreateChatRoot(
     onDismiss: () -> Unit,
+    onChatCreated: (Chat) -> Unit,
     viewModel: CreateChatViewModel = koinViewModel()
 ) {
     val state by viewModel.state.collectAsStateWithLifecycle()
+
+    ObserveAsEvents(viewModel.events) { event ->
+        when(event) {
+            is CreateChatEvent.OnChatCreated -> onChatCreated(event.chat)
+        }
+    }
 
     CourseAdaptiveDialogSheetLayout(
         onDismiss = onDismiss
@@ -135,6 +144,7 @@ fun CreateChatScreen(
                     style = CourseButtonStyle.SECONDARY
                 )
             },
+            error = state.createChatError?.asString(),
             modifier = Modifier.fillMaxWidth()
         )
     }
