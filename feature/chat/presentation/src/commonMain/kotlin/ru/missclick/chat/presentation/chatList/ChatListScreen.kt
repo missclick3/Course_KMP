@@ -32,11 +32,13 @@ import course_kmp.feature.chat.presentation.generated.resources.create_chat
 import course_kmp.feature.chat.presentation.generated.resources.do_you_want_to_log_out
 import course_kmp.feature.chat.presentation.generated.resources.do_you_want_to_log_out_desc
 import course_kmp.feature.chat.presentation.generated.resources.logout
+import course_kmp.feature.chat.presentation.generated.resources.no_chats
+import course_kmp.feature.chat.presentation.generated.resources.no_chats_subtitle
 import org.jetbrains.compose.resources.stringResource
 import org.koin.compose.viewmodel.koinViewModel
 import ru.missclick.chat.presentation.chatList.components.ChatListHeader
 import ru.missclick.chat.presentation.chatList.components.ChatListItemUi
-import ru.missclick.chat.presentation.chatList.components.EmptyChatSection
+import ru.missclick.chat.presentation.components.EmptyListSection
 import ru.missclick.chat.presentation.model.ChatUi
 import ru.missclick.core.designsystem.components.brand.CourseHorizontalDivider
 import ru.missclick.core.designsystem.components.buttons.CourseFloatingActionButton
@@ -126,7 +128,9 @@ fun ChatListScreen(
                     )
                 }
                 state.chats.isEmpty() -> {
-                    EmptyChatSection(
+                    EmptyListSection(
+                        title = stringResource(Res.string.no_chats),
+                        description = stringResource(Res.string.no_chats_subtitle),
                         modifier = Modifier
                             .weight(1f)
                             .fillMaxWidth()

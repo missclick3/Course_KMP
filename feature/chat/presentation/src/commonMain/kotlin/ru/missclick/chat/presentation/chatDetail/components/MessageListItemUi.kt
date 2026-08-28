@@ -16,9 +16,9 @@ import ru.missclick.core.presentation.util.UiText
 @Composable
 fun MessageListItemUi(
     messageUi: MessageUi,
-    onMessageLongClick: () -> Unit,
-    onDeleteClick: () -> Unit,
-    onRetryClick: () -> Unit,
+    onMessageLongClick: (MessageUi.LocalUserMessage) -> Unit,
+    onDeleteClick: (MessageUi.LocalUserMessage) -> Unit,
+    onRetryClick: (MessageUi.LocalUserMessage) -> Unit,
     onDismissMessageMenu: () -> Unit,
     modifier: Modifier = Modifier
 ) {
@@ -35,10 +35,10 @@ fun MessageListItemUi(
             is MessageUi.LocalUserMessage -> {
                 LocalUserMessage(
                     message = messageUi,
-                    onMessageLongClick = onMessageLongClick,
+                    onMessageLongClick = { onMessageLongClick(messageUi) },
                     onDismissMessageMenu = onDismissMessageMenu,
-                    onDeleteClick = onDeleteClick,
-                    onRetryClick = onRetryClick
+                    onDeleteClick = { onDeleteClick(messageUi) },
+                    onRetryClick = { onRetryClick(messageUi) }
                 )
             }
             is MessageUi.OtherUserMessage -> {
