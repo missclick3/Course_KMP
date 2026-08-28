@@ -38,7 +38,7 @@ import ru.missclick.core.designsystem.theme.extended
 
 @Composable
 fun ChatListHeader(
-    localParticipant: ChatParticipantUi,
+    localParticipant: ChatParticipantUi?,
     isUserMenuOpen: Boolean,
     onUserAvatarClick: () -> Unit,
     onDismissMenu: () -> Unit,
@@ -79,7 +79,7 @@ fun ChatListHeader(
 
 @Composable
 fun ProfileAvatarSection(
-    localParticipant: ChatParticipantUi,
+    localParticipant: ChatParticipantUi?,
     isMenuOpen: Boolean,
     onClick: () -> Unit,
     onDismissMenu: () -> Unit,
@@ -90,11 +90,13 @@ fun ProfileAvatarSection(
     Box(
         modifier = modifier
     ) {
-        CourseAvatarPhoto(
-            displayText = localParticipant.initials,
-            imageUrl = localParticipant.imageUrl,
-            onClick = onClick
-        )
+        if (localParticipant != null) {
+            CourseAvatarPhoto(
+                displayText = localParticipant.initials,
+                imageUrl = localParticipant.imageUrl,
+                onClick = onClick
+            )
+        }
 
         DropdownMenu(
             expanded = isMenuOpen,
