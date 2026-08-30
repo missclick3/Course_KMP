@@ -6,10 +6,13 @@ import ru.missclick.chat.data.dto.request.CreateChatRequest
 import ru.missclick.chat.data.mappers.toDomain
 import ru.missclick.chat.domain.chat.ChatService
 import ru.missclick.chat.domain.models.Chat
+import ru.missclick.core.data.networking.delete
 import ru.missclick.core.data.networking.get
 import ru.missclick.core.data.networking.post
 import ru.missclick.core.domain.util.DataError
+import ru.missclick.core.domain.util.EmptyResult
 import ru.missclick.core.domain.util.Result
+import ru.missclick.core.domain.util.asEmptyResult
 import ru.missclick.core.domain.util.map
 
 class KtorChatService(
@@ -36,5 +39,11 @@ class KtorChatService(
         return httpClient.get<ChatDto>(
             route = "/chat/$chatId"
         ).map { it.toDomain() }
+    }
+
+    override suspend fun leaveChat(chatId: String): EmptyResult<DataError.Remote> {
+        return httpClient.delete<Unit>(
+            route = "/chat/$chatId/leave"
+        ).asEmptyResult()
     }
 }

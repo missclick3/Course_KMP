@@ -2,6 +2,7 @@ package ru.missclick.chat.domain.chat
 
 import ru.missclick.chat.domain.models.Chat
 import ru.missclick.core.domain.util.DataError
+import ru.missclick.core.domain.util.EmptyResult
 import ru.missclick.core.domain.util.Result
 
 interface ChatService {
@@ -12,4 +13,6 @@ interface ChatService {
     suspend fun getChats(): Result<List<Chat>, DataError.Remote>
 
     suspend fun getChatById(chatId: String): Result<Chat, DataError.Remote>
+
+    suspend fun leaveChat(chatId: String): EmptyResult<DataError.Remote>
 }

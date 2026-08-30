@@ -15,9 +15,12 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.input.rememberTextFieldState
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.SnackbarHost
+import androidx.compose.material3.SnackbarHostState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
@@ -40,6 +43,7 @@ import ru.missclick.chat.presentation.model.MessageUi
 import ru.missclick.core.designsystem.components.avatar.ChatParticipantUi
 import ru.missclick.core.designsystem.theme.CourseTheme
 import ru.missclick.core.designsystem.theme.extended
+import ru.missclick.core.presentation.util.ObserveAsEvents
 import ru.missclick.core.presentation.util.UiText
 import ru.missclick.core.presentation.util.clearFocusOnTap
 import ru.missclick.core.presentation.util.currentDeviceConfiguration
@@ -67,10 +71,21 @@ fun ChatDetailRoot(
         onBack()
     }
 
+    val snackbarState = remember { SnackbarHostState() }
+    ObserveAsEvents(viewModel.events) { event ->
+        when (event) {
+            ChatDetailEvent.OnChatLeft -> onBack()
+            is ChatDetailEvent.OnError -> {
+                snackbarState.showSnackbar(event.error.asStringAsync())
+            }
+        }
+    }
+
     ChatDetailScreen(
         state = state,
         isDetailPresent = isDetailPresent,
-        onAction = viewModel::onAction
+        onAction = viewModel::onAction,
+        snackbarHostState = snackbarState
     )
 }
 
@@ -78,7 +93,8 @@ fun ChatDetailRoot(
 fun ChatDetailScreen(
     state: ChatDetailState,
     onAction: (ChatDetailAction) -> Unit,
-    isDetailPresent: Boolean
+    isDetailPresent: Boolean,
+    snackbarHostState: SnackbarHostState,
 ) {
     val configuration = currentDeviceConfiguration()
     val messageListState = rememberLazyListState()
@@ -88,7 +104,10 @@ fun ChatDetailScreen(
             .fillMaxSize(),
         containerColor = if (!configuration.isWideScreen) {
             MaterialTheme.colorScheme.surface
-        } else MaterialTheme.colorScheme.extended.surfaceLower
+        } else MaterialTheme.colorScheme.extended.surfaceLower,
+        snackbarHost = {
+            SnackbarHost(snackbarHostState)
+        }
     ) { innerPadding ->
         Box(
             modifier = Modifier
@@ -228,7 +247,8 @@ private fun ChatDetailEmptyPreview() {
         ChatDetailScreen(
             state = ChatDetailState(),
             isDetailPresent = false,
-            onAction = {}
+            onAction = {},
+            snackbarHostState = remember { SnackbarHostState() }
         )
     }
 }
@@ -297,7 +317,8 @@ private fun ChatDetailMessagesPreview() {
                 }
             ),
             isDetailPresent = true,
-            onAction = {}
+            onAction = {},
+            snackbarHostState = remember { SnackbarHostState() }
         )
     }
 }
