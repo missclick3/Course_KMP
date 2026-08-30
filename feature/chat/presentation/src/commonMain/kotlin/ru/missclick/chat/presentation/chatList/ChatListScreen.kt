@@ -38,7 +38,7 @@ import org.jetbrains.compose.resources.stringResource
 import org.koin.compose.viewmodel.koinViewModel
 import ru.missclick.chat.presentation.chatList.components.ChatListHeader
 import ru.missclick.chat.presentation.chatList.components.ChatListItemUi
-import ru.missclick.chat.presentation.components.EmptyListSection
+import ru.missclick.chat.presentation.components.EmptySection
 import ru.missclick.chat.presentation.model.ChatUi
 import ru.missclick.core.designsystem.components.brand.CourseHorizontalDivider
 import ru.missclick.core.designsystem.components.buttons.CourseFloatingActionButton
@@ -128,7 +128,7 @@ fun ChatListScreen(
                     )
                 }
                 state.chats.isEmpty() -> {
-                    EmptyListSection(
+                    EmptySection(
                         title = stringResource(Res.string.no_chats),
                         description = stringResource(Res.string.no_chats_subtitle),
                         modifier = Modifier

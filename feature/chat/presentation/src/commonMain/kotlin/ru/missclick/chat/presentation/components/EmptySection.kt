@@ -20,7 +20,7 @@ import ru.missclick.core.presentation.util.DeviceConfiguration
 import ru.missclick.core.presentation.util.currentDeviceConfiguration
 
 @Composable
-fun EmptyListSection(
+fun EmptySection(
     title: String,
     description: String,
     modifier: Modifier = Modifier

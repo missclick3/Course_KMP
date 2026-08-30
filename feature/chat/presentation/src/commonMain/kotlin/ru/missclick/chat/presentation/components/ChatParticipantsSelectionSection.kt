@@ -20,6 +20,7 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import ru.missclick.core.designsystem.components.avatar.ChatParticipantUi
 import ru.missclick.core.designsystem.components.avatar.CourseAvatarPhoto
+import ru.missclick.core.designsystem.components.brand.CourseHorizontalDivider
 import ru.missclick.core.designsystem.theme.extended
 import ru.missclick.core.designsystem.theme.titleXSmall
 import ru.missclick.core.presentation.util.DeviceConfiguration
@@ -27,6 +28,7 @@ import ru.missclick.core.presentation.util.currentDeviceConfiguration
 
 @Composable
 fun ColumnScope.ChatParticipantsSelectionSection(
+    existingChatParticipants: List<ChatParticipantUi>,
     selectedParticipants: List<ChatParticipantUi>,
     modifier: Modifier = Modifier,
     searchResult: ChatParticipantUi? = null
@@ -47,6 +49,20 @@ fun ColumnScope.ChatParticipantsSelectionSection(
         modifier = rootHeightModifier.then(modifier),
     ) {
         LazyColumn(modifier = Modifier.fillMaxWidth()) {
+            items(
+                items = existingChatParticipants,
+                key = { "existing${it.id}" }
+            ) { participant ->
+                ChatParticipantListItem(
+                    participantUi = participant,
+                    modifier = Modifier.fillMaxWidth()
+                )
+            }
+            if (existingChatParticipants.isNotEmpty()) {
+                item {
+                    CourseHorizontalDivider()
+                }
+            }
             searchResult?.let {
                 item(key = it.id) {
                     ChatParticipantListItem(

@@ -51,23 +51,22 @@ fun ChatItemHeaderRow(
                 maxLines = 1,
                 modifier = Modifier.fillMaxWidth()
             )
-        }
-
-        if (isGroupChat) {
-            val you = stringResource(Res.string.you)
-            val formattedUsernames = remember(chat.otherParticipants) {
-                "$you, " + chat.otherParticipants.joinToString {
-                    it.username
+            if (isGroupChat) {
+                val you = stringResource(Res.string.you)
+                val formattedUsernames = remember(chat.otherParticipants) {
+                    "$you, " + chat.otherParticipants.joinToString {
+                        it.username
+                    }
                 }
+                Text(
+                    text = formattedUsernames,
+                    color = MaterialTheme.colorScheme.extended.textPlaceholder,
+                    style = MaterialTheme.typography.bodySmall,
+                    modifier = Modifier.fillMaxWidth(),
+                    maxLines = 1,
+                    overflow = TextOverflow.Ellipsis
+                )
             }
-            Text(
-                text = formattedUsernames,
-                color = MaterialTheme.colorScheme.extended.textPlaceholder,
-                style = MaterialTheme.typography.bodySmall,
-                modifier = Modifier.fillMaxWidth(),
-                maxLines = 1,
-                overflow = TextOverflow.Ellipsis
-            )
         }
     }
 }

@@ -7,8 +7,10 @@ import org.koin.dsl.bind
 import org.koin.dsl.module
 import ru.missclick.chat.data.chat.KtorChatParticipantService
 import ru.missclick.chat.data.chat.KtorChatService
+import ru.missclick.chat.data.chat.OfflineFirstChatRepository
 import ru.missclick.chat.database.DatabaseFactory
 import ru.missclick.chat.domain.chat.ChatParticipantService
+import ru.missclick.chat.domain.chat.ChatRepository
 import ru.missclick.chat.domain.chat.ChatService
 
 expect val platformChatDataModule: Module
@@ -18,6 +20,7 @@ val chatDataModule = module {
 
     singleOf(::KtorChatParticipantService) bind ChatParticipantService::class
     singleOf(::KtorChatService) bind ChatService::class
+    singleOf(::OfflineFirstChatRepository) bind ChatRepository::class
     single {
         get<DatabaseFactory>()
             .create()

@@ -21,6 +21,7 @@ import org.koin.compose.viewmodel.koinViewModel
 import ru.missclick.chat.presentation.chatDetail.ChatDetailRoot
 import ru.missclick.chat.presentation.chatList.ChatListRoot
 import ru.missclick.chat.presentation.createChat.CreateChatRoot
+import ru.missclick.chat.presentation.manageChat.ManageChatRoot
 import ru.missclick.core.designsystem.theme.extended
 import ru.missclick.core.presentation.util.DialogSheetScopedViewModel
 
@@ -91,6 +92,9 @@ fun ChatListDetailAdaptiveLayout(
                                 scaffoldNavigator.navigateBack()
                             }
                         }
+                    },
+                    onChatMembersClick = {
+                        chatListDetailViewModel.onAction(ChatListDetailAction.OnManageChatClick)
                     }
                 )
             }
@@ -110,6 +114,20 @@ fun ChatListDetailAdaptiveLayout(
                 scope.launch {
                     scaffoldNavigator.navigateTo(ListDetailPaneScaffoldRole.Detail)
                 }
+            }
+        )
+    }
+
+    DialogSheetScopedViewModel(
+        visible = sharedState.dialogState is DialogState.ManageChat
+    ) {
+        ManageChatRoot(
+            chatId = sharedState.selectedChatId,
+            onDismiss = {
+                chatListDetailViewModel.onAction(ChatListDetailAction.OnDismissCurrentDialog)
+            },
+            onMembersAdded = {
+                chatListDetailViewModel.onAction(ChatListDetailAction.OnDismissCurrentDialog)
             }
         )
     }
