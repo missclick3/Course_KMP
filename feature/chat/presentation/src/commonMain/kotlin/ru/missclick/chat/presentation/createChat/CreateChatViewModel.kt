@@ -19,7 +19,7 @@ import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import ru.missclick.chat.domain.chat.ChatParticipantService
-import ru.missclick.chat.domain.chat.ChatService
+import ru.missclick.chat.domain.chat.ChatRepository
 import ru.missclick.chat.presentation.mappers.toUi
 import ru.missclick.core.domain.util.DataError
 import ru.missclick.core.domain.util.onFailure
@@ -30,7 +30,7 @@ import kotlin.time.Duration.Companion.seconds
 
 class CreateChatViewModel(
     private val chatParticipantService: ChatParticipantService,
-    private val chatService: ChatService
+    private val chatRepository: ChatRepository
 ) : ViewModel() {
 
     private var hasLoadedInitialData = false
@@ -82,7 +82,7 @@ class CreateChatViewModel(
                 )
             }
 
-            chatService.createChat(
+            chatRepository.createChat(
                 otherUserIds = userIds
             ).onSuccess { chat ->
                 _state.update {

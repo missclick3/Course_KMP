@@ -1,7 +1,6 @@
 package ru.missclick.chat.data.chat
 
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.filterNotNull
 import kotlinx.coroutines.flow.map
 import ru.missclick.chat.data.mappers.toDomain
 import ru.missclick.chat.data.mappers.toEntity
@@ -66,5 +65,18 @@ class OfflineFirstChatRepository(
     override fun getChatInfoById(chatId: String): Flow<ChatInfo> {
         return db.chatDao.getChatInfoById(chatId)
             .map { it.toDomain() }
+    }
+
+    override suspend fun createChat(otherUserIds: List<String>): Result<Chat, DataError.Remote> {
+        return chatService
+            .createChat(otherUserIds)
+            .onSuccess { chat ->
+                db.chatDao.upsertChatWithParticipantsAndCrossRefs(
+                    chat = chat.toEntity(),
+                    participants = chat.participants.map { it.toEntity() },
+                    participantDao = db.chatParticipantDao,
+                    crossRefDao = db.chatParticipantsCrossRefDao
+                )
+            }
     }
 }
