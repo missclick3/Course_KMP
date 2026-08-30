@@ -99,7 +99,7 @@ fun ManageChatScreen(
                         onAction(ManageChatAction.OnPrimaryActionClick)
                     },
                     enabled = state.selectedChatParticipants.isNotEmpty(),
-                    isLoading = state.isCreatingChat
+                    isLoading = state.isSubmitting
                 )
             },
             secondaryButton = {
@@ -111,7 +111,7 @@ fun ManageChatScreen(
                     style = CourseButtonStyle.SECONDARY
                 )
             },
-            error = state.createChatError?.asString(),
+            error = state.submitError?.asString(),
             modifier = Modifier.fillMaxWidth()
         )
     }

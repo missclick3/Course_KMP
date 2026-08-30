@@ -79,7 +79,7 @@ class CreateChatViewModel(
         viewModelScope.launch {
             _state.update {
                 it.copy(
-                    isCreatingChat = true,
+                    isSubmitting = true,
                     canAddParticipant = false
                 )
             }
@@ -88,15 +88,15 @@ class CreateChatViewModel(
                 otherUserIds = userIds
             ).onSuccess { chat ->
                 _state.update {
-                    it.copy(isCreatingChat = false)
+                    it.copy(isSubmitting = false)
                 }
                 eventChannel.send(CreateChatEvent.OnChatCreated(chat))
             }.onFailure { error ->
                 _state.update {
                     it.copy(
-                        createChatError = error.toUiText(),
+                        submitError = error.toUiText(),
                         canAddParticipant = it.currentSearchResult != null && !it.isSearching,
-                        isCreatingChat = false
+                        isSubmitting = false
                     )
                 }
             }

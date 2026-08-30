@@ -18,6 +18,7 @@ import ru.missclick.chat.domain.chat.ChatRepository
 import ru.missclick.chat.domain.chat.ChatService
 import ru.missclick.chat.domain.models.Chat
 import ru.missclick.chat.domain.models.ChatInfo
+import ru.missclick.chat.domain.models.ChatParticipant
 import ru.missclick.core.domain.util.DataError
 import ru.missclick.core.domain.util.EmptyResult
 import ru.missclick.core.domain.util.Result
@@ -118,6 +119,21 @@ class OfflineFirstChatRepository(
             }
     }
 
+    override suspend fun addParticipantsToChat(
+        chatId: String,
+        userIds: List<String>
+    ): Result<Chat, DataError.Remote> {
+        return chatService.addParticipantsToChat(chatId, userIds)
+            .onSuccess { chat ->
+                db.chatDao.upsertChatWithParticipantsAndCrossRefs(
+                    chat = chat.toEntity(),
+                    participants = chat.participants.map { it.toEntity() },
+                    participantDao = db.chatParticipantDao,
+                    crossRefDao = db.chatParticipantsCrossRefDao
+                )
+            }
+    }
+
     private suspend fun List<ChatParticipantEntity>.onlyActive(chatId: String): List<ChatParticipantEntity> {
         val activeParticipantIds = db
             .chatDao
@@ -126,5 +142,12 @@ class OfflineFirstChatRepository(
             .map { it.userId }
 
         return this.filter { it.userId in activeParticipantIds }
+    }
+
+    override fun getActiveParticipantsByChatId(chatId: String): Flow<List<ChatParticipant>> {
+        return db.chatDao.getActiveParticipantsByChatId(chatId)
+            .map { participants ->
+                participants.map { it.toDomain() }
+            }
     }
 }

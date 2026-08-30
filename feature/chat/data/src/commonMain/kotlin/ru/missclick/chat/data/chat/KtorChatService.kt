@@ -3,6 +3,7 @@ package ru.missclick.chat.data.chat
 import io.ktor.client.HttpClient
 import ru.missclick.chat.data.dto.ChatDto
 import ru.missclick.chat.data.dto.request.CreateChatRequest
+import ru.missclick.chat.data.dto.request.ParticipantsRequest
 import ru.missclick.chat.data.mappers.toDomain
 import ru.missclick.chat.domain.chat.ChatService
 import ru.missclick.chat.domain.models.Chat
@@ -45,5 +46,17 @@ class KtorChatService(
         return httpClient.delete<Unit>(
             route = "/chat/$chatId/leave"
         ).asEmptyResult()
+    }
+
+    override suspend fun addParticipantsToChat(
+        chatId: String,
+        userIds: List<String>
+    ): Result<Chat, DataError.Remote> {
+        return httpClient.post<ParticipantsRequest, ChatDto>(
+            route = "/chat/$chatId/add",
+            body = ParticipantsRequest(
+                userIds = userIds
+            )
+        ).map { it.toDomain() }
     }
 }
