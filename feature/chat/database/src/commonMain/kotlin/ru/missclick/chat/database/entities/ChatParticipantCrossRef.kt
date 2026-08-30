@@ -2,6 +2,7 @@ package ru.missclick.chat.database.entities
 
 import androidx.room.Entity
 import androidx.room.ForeignKey
+import androidx.room.Index
 
 @Entity(
     primaryKeys = ["chatId", "userId"],
@@ -18,6 +19,10 @@ import androidx.room.ForeignKey
             childColumns = ["userId"],
             onDelete = ForeignKey.CASCADE
         )
+    ],
+    indices = [
+        Index("chatId"),
+        Index("userId"),
     ]
 )
 data class ChatParticipantCrossRef(
