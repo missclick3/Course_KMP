@@ -1,6 +1,7 @@
 package ru.missclick.chat.data.chat
 
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.filterNotNull
 import kotlinx.coroutines.flow.map
 import ru.missclick.chat.data.mappers.toDomain
 import ru.missclick.chat.data.mappers.toEntity
@@ -10,8 +11,11 @@ import ru.missclick.chat.database.entities.ChatWithParticipants
 import ru.missclick.chat.domain.chat.ChatRepository
 import ru.missclick.chat.domain.chat.ChatService
 import ru.missclick.chat.domain.models.Chat
+import ru.missclick.chat.domain.models.ChatInfo
 import ru.missclick.core.domain.util.DataError
+import ru.missclick.core.domain.util.EmptyResult
 import ru.missclick.core.domain.util.Result
+import ru.missclick.core.domain.util.asEmptyResult
 import ru.missclick.core.domain.util.onSuccess
 
 class OfflineFirstChatRepository(
@@ -44,5 +48,23 @@ class OfflineFirstChatRepository(
                     messageDao = db.chatMessageDao
                 )
             }
+    }
+
+    override suspend fun fetchChatById(chatId: String): EmptyResult<DataError.Remote> {
+        return chatService.getChatById(chatId)
+            .onSuccess { chat ->
+                db.chatDao.upsertChatWithParticipantsAndCrossRefs(
+                    chat = chat.toEntity(),
+                    participants = chat.participants.map { it.toEntity() },
+                    participantDao = db.chatParticipantDao,
+                    crossRefDao = db.chatParticipantsCrossRefDao
+                )
+            }
+            .asEmptyResult()
+    }
+
+    override fun getChatInfoById(chatId: String): Flow<ChatInfo> {
+        return db.chatDao.getChatInfoById(chatId)
+            .map { it.toDomain() }
     }
 }

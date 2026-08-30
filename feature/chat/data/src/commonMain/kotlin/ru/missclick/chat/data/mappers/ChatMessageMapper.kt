@@ -59,3 +59,12 @@ fun LastMessageView.toEntity(): ChatMessageEntity {
         timestamp = timestamp
     )
 }
+
+fun ChatMessageEntity.toDomain() = ChatMessage(
+    id = messageId,
+    chatId = chatId,
+    content = content,
+    senderId = senderId,
+    createdAt = Instant.fromEpochSeconds(timestamp),
+    deliveryStatus = ChatMessageDeliveryStatus.SENT
+)
