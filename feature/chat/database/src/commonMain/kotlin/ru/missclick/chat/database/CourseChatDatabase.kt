@@ -1,5 +1,6 @@
 package ru.missclick.chat.database
 
+import androidx.room.ConstructedBy
 import androidx.room.Database
 import androidx.room.RoomDatabase
 import ru.missclick.chat.database.dao.ChatDao
@@ -24,6 +25,7 @@ import ru.missclick.chat.database.view.LastMessageView
     ],
     version = 1
 )
+@ConstructedBy(CourseChatDatabaseConstructor::class)
 abstract class CourseChatDatabase: RoomDatabase() {
     abstract val chatDao: ChatDao
     abstract val chatParticipantDao: ChatParticipantDao
