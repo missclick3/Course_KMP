@@ -16,7 +16,7 @@ import course_kmp.feature.chat.presentation.generated.resources.Res
 import course_kmp.feature.chat.presentation.generated.resources.no_messages
 import course_kmp.feature.chat.presentation.generated.resources.no_messages_subtitle
 import org.jetbrains.compose.resources.stringResource
-import ru.missclick.chat.presentation.components.EmptyListSection
+import ru.missclick.chat.presentation.components.EmptySection
 import ru.missclick.chat.presentation.model.MessageUi
 
 @Composable
@@ -35,7 +35,7 @@ fun MessageList(
                 .padding(vertical = 32.dp),
             contentAlignment = Alignment.Center
         ) {
-            EmptyListSection(
+            EmptySection(
                 title = stringResource(Res.string.no_messages),
                 description = stringResource(Res.string.no_messages_subtitle)
             )
