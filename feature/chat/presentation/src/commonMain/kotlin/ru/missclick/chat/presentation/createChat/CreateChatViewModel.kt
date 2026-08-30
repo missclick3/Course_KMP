@@ -20,6 +20,8 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import ru.missclick.chat.domain.chat.ChatParticipantService
 import ru.missclick.chat.domain.chat.ChatRepository
+import ru.missclick.chat.presentation.components.manageChat.ManageChatAction
+import ru.missclick.chat.presentation.components.manageChat.ManageChatState
 import ru.missclick.chat.presentation.mappers.toUi
 import ru.missclick.core.domain.util.DataError
 import ru.missclick.core.domain.util.onFailure
@@ -38,7 +40,7 @@ class CreateChatViewModel(
     private val eventChannel = Channel<CreateChatEvent>()
     val events = eventChannel.receiveAsFlow()
 
-    private val _state = MutableStateFlow(CreateChatState())
+    private val _state = MutableStateFlow(ManageChatState())
 
     @OptIn(FlowPreview::class)
     private val searchFlow = snapshotFlow { _state.value.queryTextState.text.toString() }
@@ -57,13 +59,13 @@ class CreateChatViewModel(
         .stateIn(
             scope = viewModelScope,
             started = SharingStarted.WhileSubscribed(5_000L),
-            initialValue = CreateChatState()
+            initialValue = ManageChatState()
         )
 
-    fun onAction(action: CreateChatAction) {
+    fun onAction(action: ManageChatAction) {
         when (action) {
-            CreateChatAction.OnAddClick -> addParticipant()
-            CreateChatAction.OnCreateChatClick -> createChat()
+            ManageChatAction.OnAddClick -> addParticipant()
+            ManageChatAction.OnPrimaryActionClick -> createChat()
             else -> Unit
         }
     }

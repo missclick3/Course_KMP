@@ -1,11 +1,12 @@
-package ru.missclick.chat.presentation.createChat
+package ru.missclick.chat.presentation.components.manageChat
 
 import androidx.compose.foundation.text.input.TextFieldState
 import ru.missclick.core.designsystem.components.avatar.ChatParticipantUi
 import ru.missclick.core.presentation.util.UiText
 
-data class CreateChatState(
+data class ManageChatState(
     val queryTextState: TextFieldState = TextFieldState(),
+    val existingChatParticipants: List<ChatParticipantUi> = emptyList(),
     val selectedChatParticipants: List<ChatParticipantUi> = emptyList(),
     val isSearching: Boolean = false,
     val isCreatingChat: Boolean = false,
