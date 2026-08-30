@@ -9,6 +9,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import ru.missclick.chat.domain.models.ChatMessageDeliveryStatus
 import ru.missclick.chat.presentation.model.MessageUi
+import ru.missclick.chat.presentation.util.getChatBubbleColorForUser
 import ru.missclick.core.designsystem.components.avatar.ChatParticipantUi
 import ru.missclick.core.designsystem.theme.CourseTheme
 import ru.missclick.core.presentation.util.UiText
@@ -43,7 +44,8 @@ fun MessageListItemUi(
             }
             is MessageUi.OtherUserMessage -> {
                 OtherUserMessage(
-                    message = messageUi
+                    message = messageUi,
+                    color = getChatBubbleColorForUser(messageUi.sender.id)
                 )
             }
         }
