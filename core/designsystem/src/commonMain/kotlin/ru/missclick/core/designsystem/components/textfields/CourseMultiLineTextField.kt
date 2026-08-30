@@ -14,6 +14,7 @@ import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.foundation.text.input.TextFieldLineLimits
 import androidx.compose.foundation.text.input.TextFieldState
 import androidx.compose.foundation.text.input.rememberTextFieldState
 import androidx.compose.material3.MaterialTheme
@@ -36,6 +37,7 @@ fun CourseMultiLineTextField(
     enabled: Boolean = true,
     keyboardOptions: KeyboardOptions = KeyboardOptions.Default,
     onKeyboardAction: () -> Unit = {},
+    maxHeightInLines: Int = 3,
     bottomContent: @Composable (RowScope.() -> Unit)? = null
 ) {
     Column(
@@ -54,7 +56,6 @@ fun CourseMultiLineTextField(
     ) {
         BasicTextField(
             state = state,
-            modifier = Modifier.weight(1f),
             enabled = enabled,
             textStyle = MaterialTheme.typography.bodyLarge.copy(
                 color = MaterialTheme.colorScheme.extended.textPrimary
@@ -63,9 +64,13 @@ fun CourseMultiLineTextField(
             onKeyboardAction = {
                 onKeyboardAction()
             },
+            lineLimits = TextFieldLineLimits.MultiLine(
+                minHeightInLines = 1,
+                maxHeightInLines = maxHeightInLines
+            ),
             cursorBrush = SolidColor(MaterialTheme.colorScheme.extended.textPrimary),
             decorator = { innerBox ->
-                if (placeholder != null && state.text.isNotEmpty()) {
+                if (placeholder != null && state.text.isEmpty()) {
                     Text(
                         text = placeholder,
                         color = MaterialTheme.colorScheme.extended.textPlaceholder,

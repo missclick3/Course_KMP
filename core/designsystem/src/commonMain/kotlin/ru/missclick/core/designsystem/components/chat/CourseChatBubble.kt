@@ -26,7 +26,7 @@ import ru.missclick.core.designsystem.theme.CourseTheme
 import ru.missclick.core.designsystem.theme.extended
 
 @Composable
-fun ChirpChatBubble(
+fun CourseChatBubble(
     messageContent: String,
     sender: String,
     formattedDateTime: String,
@@ -102,9 +102,9 @@ fun ChirpChatBubble(
 
 @Composable
 @Preview
-fun ChirpChatBubbleLeftPreview() {
+fun CourseChatBubbleLeftPreview() {
     CourseTheme(darkTheme = true) {
-        ChirpChatBubble(
+        CourseChatBubble(
             messageContent = "Hello world, this is a longer message that hopefully spans" +
                     " over multiple lines so we can see how the preview would look like for that as well.",
             sender = "Alex",
@@ -119,7 +119,7 @@ fun ChirpChatBubbleLeftPreview() {
 @Preview
 fun ChirpChatBubbleRightPreview() {
     CourseTheme {
-        ChirpChatBubble(
+        CourseChatBubble(
             messageContent = "Hello world, this is a longer message that hopefully spans" +
                     " over multiple lines so we can see how the preview would look like for that as well.",
             sender = "Alex",
