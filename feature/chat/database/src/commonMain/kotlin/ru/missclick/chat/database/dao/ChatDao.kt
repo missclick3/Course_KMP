@@ -7,6 +7,7 @@ import androidx.room.Upsert
 import kotlinx.coroutines.flow.Flow
 import ru.missclick.chat.database.entities.ChatEntity
 import ru.missclick.chat.database.entities.ChatInfoEntity
+import ru.missclick.chat.database.entities.ChatMessageEntity
 import ru.missclick.chat.database.entities.ChatParticipantCrossRef
 import ru.missclick.chat.database.entities.ChatParticipantEntity
 import ru.missclick.chat.database.entities.ChatWithParticipants
@@ -25,7 +26,17 @@ interface ChatDao {
 
     @Query("SELECT * FROM chatentity ORDER BY lastActivityAt DESC")
     @Transaction
-    fun getChatsWithParticipants(): Flow<ChatWithParticipants>
+    fun getChatsWithParticipants(): Flow<List<ChatWithParticipants>>
+
+    @Query("""
+        SELECT DISTINCT c.*
+        FROM CHATENTITY c
+        JOIN chatparticipantcrossref cpcr ON c.chatId = cpcr.chatId
+        WHERE cpcr.isActive = 1
+        ORDER BY lastActivityAt
+    """)
+    @Transaction
+    fun getChatsWithActiveParticipants(): Flow<List<ChatWithParticipants>>
 
     @Query("SELECT * FROM chatentity WHERE chatId = :id")
     @Transaction
@@ -85,9 +96,29 @@ interface ChatDao {
     suspend fun upsertChatsWithParticipantsAndCrossRefs(
         chats: List<ChatWithParticipants>,
         participantDao: ChatParticipantDao,
-        crossRefDao: ChatParticipantsCrossRefDao
+        crossRefDao: ChatParticipantsCrossRefDao,
+        messageDao: ChatMessageDao
     ) {
         upsertChats(chats.map { it.chat })
+
+        val serverChatIds = chats.map { it.chat.chatId }.toSet()
+        val localChatIds = getAllChatIds()
+        val staleChatIds = localChatIds - serverChatIds
+
+        chats.forEach { chat ->
+            chat.lastMessage?.run {
+                messageDao.upsertMessage(
+                    ChatMessageEntity(
+                        messageId = messageId,
+                        chatId = chatId,
+                        senderId = senderId,
+                        deliveryStatus = deliveryStatus,
+                        content = content,
+                        timestamp = timestamp
+                    )
+                )
+            }
+        }
 
         val allParticipants = chats.flatMap { it.participants }
         participantDao.upsertParticipants(allParticipants)
@@ -108,5 +139,7 @@ interface ChatDao {
                 participants = chat.participants
             )
         }
+
+        deleteChatsByIds(staleChatIds)
     }
 }

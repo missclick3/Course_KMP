@@ -6,6 +6,7 @@ import ru.missclick.chat.data.dto.request.CreateChatRequest
 import ru.missclick.chat.data.mappers.toDomain
 import ru.missclick.chat.domain.chat.ChatService
 import ru.missclick.chat.domain.models.Chat
+import ru.missclick.core.data.networking.get
 import ru.missclick.core.data.networking.post
 import ru.missclick.core.domain.util.DataError
 import ru.missclick.core.domain.util.Result
@@ -21,5 +22,13 @@ class KtorChatService(
                 otherUserIds = otherUserIds
             )
         ).map { it.toDomain() }
+    }
+
+    override suspend fun getChats(): Result<List<Chat>, DataError.Remote> {
+        return httpClient.get<List<ChatDto>>(
+            route = "/chat"
+        ).map { chatDtos ->
+            chatDtos.map { it.toDomain() }
+        }
     }
 }

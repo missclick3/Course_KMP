@@ -24,6 +24,7 @@ import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import ru.missclick.chat.domain.models.ChatMessage
+import ru.missclick.chat.domain.models.ChatMessageDeliveryStatus
 import ru.missclick.chat.presentation.components.ChatItemHeaderRow
 import ru.missclick.chat.presentation.model.ChatUi
 import ru.missclick.core.designsystem.components.avatar.ChatParticipantUi
@@ -129,7 +130,8 @@ private fun ChatListItemUiPreview() {
                     chatId = "1",
                     content = "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since 1966, when designers at Letraset and James Mosley, the librarian at St Bride Printing Library in London, took a 1914 Cicero translation and scrambled it to make dummy text for Letraset's Body Type sheets. It has survived not only many decades, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised thanks to these sheets and more recently with desktop publishing software like Aldus PageMaker and Microsoft Word including versions of Lorem Ipsum.",
                     createdAt = Clock.System.now(),
-                    senderId = ""
+                    senderId = "",
+                    deliveryStatus = ChatMessageDeliveryStatus.SENT
                 ),
                 lastMessageSenderUsername = "Ann"
             ),

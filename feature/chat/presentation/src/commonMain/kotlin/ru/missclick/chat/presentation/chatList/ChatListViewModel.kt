@@ -4,18 +4,38 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
+import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.onStart
 import kotlinx.coroutines.flow.stateIn
+import kotlinx.coroutines.launch
+import ru.missclick.chat.domain.chat.ChatRepository
+import ru.missclick.chat.presentation.mappers.toUi
+import ru.missclick.core.domain.auth.SessionStorage
 
-class ChatListViewModel : ViewModel() {
+class ChatListViewModel(
+    private val repository: ChatRepository,
+    sessionStorage: SessionStorage
+) : ViewModel() {
 
     private var hasLoadedInitialData = false
 
     private val _state = MutableStateFlow(ChatListState())
-    val state = _state
+    val state = combine(
+        _state,
+        repository.getChats(),
+        sessionStorage.observeAuthInfo()
+    ) { currentState, chats, authInfo ->
+        if (authInfo == null) {
+            return@combine ChatListState()
+        }
+        currentState.copy(
+            chats = chats.map { it.toUi(authInfo.user.id) },
+            localParticipantUi = authInfo.user.toUi()
+        )
+    }
         .onStart {
             if (!hasLoadedInitialData) {
-                /** Load initial data here **/
+                loadChats()
                 hasLoadedInitialData = true
             }
         }
@@ -28,6 +48,12 @@ class ChatListViewModel : ViewModel() {
     fun onAction(action: ChatListAction) {
         when (action) {
             else -> Unit
+        }
+    }
+
+    private fun loadChats() {
+        viewModelScope.launch {
+            repository.fetchChats()
         }
     }
 }
