@@ -25,11 +25,14 @@ import kotlinx.coroutines.launch
 import ru.missclick.chat.domain.chat.ChatConnectionClient
 import ru.missclick.chat.domain.chat.ChatRepository
 import ru.missclick.chat.domain.message.MessageRepository
+import ru.missclick.chat.domain.models.ChatMessage
 import ru.missclick.chat.domain.models.ConnectionState
 import ru.missclick.chat.domain.models.OutgoingNewMessage
 import ru.missclick.chat.presentation.mappers.toUi
 import ru.missclick.chat.presentation.model.MessageUi
 import ru.missclick.core.domain.auth.SessionStorage
+import ru.missclick.core.domain.util.DataErrorException
+import ru.missclick.core.domain.util.Paginator
 import ru.missclick.core.domain.util.onFailure
 import ru.missclick.core.domain.util.onSuccess
 import ru.missclick.core.presentation.util.toUiText
@@ -37,7 +40,7 @@ import kotlin.uuid.Uuid
 
 class ChatDetailViewModel(
     private val chatRepository: ChatRepository,
-    private val sessionStorage: SessionStorage,
+    sessionStorage: SessionStorage,
     private val messageRepository: MessageRepository,
     private val connectionClient: ChatConnectionClient
 ) : ViewModel() {
@@ -49,8 +52,17 @@ class ChatDetailViewModel(
 
     private var hasLoadedInitialData = false
 
+    private var currentPaginator: Paginator<String?, ChatMessage>? = null
+
     @OptIn(ExperimentalCoroutinesApi::class)
     private val chatInfoFlow = _chatId
+        .onEach { chatId ->
+            if (chatId != null) {
+                setupPaginatorForChat(chatId)
+            } else {
+                currentPaginator = null
+            }
+        }
         .flatMapLatest { chatId ->
             if (chatId != null) {
                 chatRepository.getChatInfoById(chatId)
@@ -243,6 +255,46 @@ class ChatDetailViewModel(
                     )
                 }
             }.launchIn(viewModelScope)
+    }
+
+    private fun setupPaginatorForChat(chatId: String) {
+        currentPaginator = Paginator(
+            initialKey = null,
+            onLoadUpdated = { isLoading ->
+                _state.update {
+                    it.copy(isPaginationLoading = isLoading)
+                }
+            },
+            onRequest = { beforeTimestamp ->
+                messageRepository.fetchMessages(chatId, beforeTimestamp)
+            },
+            getNextKey = { messages ->
+                messages.minOfOrNull { it.createdAt }?.toString()
+            },
+            onError = { throwable ->
+                if (throwable is DataErrorException) {
+                    eventChannel.send(ChatDetailEvent.OnError(throwable.error.toUiText()))
+                }
+            },
+            onSuccess = { messages, _ ->
+                _state.update {
+                    it.copy(
+                        endReached = messages.isEmpty()
+                    )
+                }
+            }
+        )
+
+        _state.update {
+            it.copy(
+                endReached = false,
+                isPaginationLoading = false
+            )
+        }
+
+        viewModelScope.launch {
+            currentPaginator?.loadNextItems()
+        }
     }
 
     private fun observeChatMessages() {
