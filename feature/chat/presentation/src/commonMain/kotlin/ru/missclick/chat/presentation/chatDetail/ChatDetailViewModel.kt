@@ -6,6 +6,8 @@ import androidx.compose.foundation.text.input.clearText
 import androidx.compose.runtime.snapshotFlow
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import course_kmp.feature.chat.presentation.generated.resources.Res
+import course_kmp.feature.chat.presentation.generated.resources.today
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -36,6 +38,7 @@ import ru.missclick.core.domain.util.DataErrorException
 import ru.missclick.core.domain.util.Paginator
 import ru.missclick.core.domain.util.onFailure
 import ru.missclick.core.domain.util.onSuccess
+import ru.missclick.core.presentation.util.UiText
 import ru.missclick.core.presentation.util.toUiText
 import kotlin.uuid.Uuid
 
@@ -118,8 +121,6 @@ class ChatDetailViewModel(
     fun onAction(action: ChatDetailAction) {
         when (action) {
             is ChatDetailAction.OnSelectChat -> switchChat(action.chatId)
-            ChatDetailAction.OnBackClick -> {}
-            ChatDetailAction.OnChatMembersClick -> {}
             ChatDetailAction.OnChatOptionsClick -> onChatOptionsClick()
             is ChatDetailAction.OnDeleteMessageClick -> deleteMessage(action.message)
             ChatDetailAction.OnDismissChatOptions -> onDismissChatOptions()
@@ -130,6 +131,68 @@ class ChatDetailViewModel(
             ChatDetailAction.OnScrollToTop -> onScrollToTop()
             ChatDetailAction.OnSendMessageClick -> sendMessage()
             ChatDetailAction.OnRetryPaginationClick -> retryPagination()
+            ChatDetailAction.OnHideBanner -> hideBanner()
+            is ChatDetailAction.OnTopVisibleIndexChanged -> updateBanner(action.topVisibleIndex)
+            is ChatDetailAction.OnFirstVisibleIndexChanged -> updateNearBottom(action.index)
+            else -> Unit
+        }
+    }
+
+    private fun updateNearBottom(index: Int) {
+        _state.update {
+            it.copy(
+                isNearBottom = index <= 3
+            )
+        }
+    }
+
+    private fun updateBanner(topVisibleIndex: Int) {
+        val visibleDate = calculateBannerDateFromIndex(
+            messages = state.value.messages,
+            index = topVisibleIndex
+        )
+
+        _state.update {
+            it.copy(
+                bannerState = BannerState(
+                    formattedDate = visibleDate,
+                    isVisible = visibleDate != null
+                )
+            )
+        }
+    }
+
+    private fun calculateBannerDateFromIndex(
+        messages: List<MessageUi>,
+        index: Int
+    ): UiText? {
+        if (messages.isEmpty() || index < 0 || index >= messages.size) {
+            return null
+        }
+
+        val nearestDateSeparator = (index until messages.size)
+            .asSequence()
+            .mapNotNull { index ->
+                val item = messages.getOrNull(index)
+                if (item is MessageUi.DateSeparator) item.date else null
+            }
+            .firstOrNull()
+
+        return when(nearestDateSeparator) {
+            is UiText.Resource -> {
+                if (nearestDateSeparator.id == Res.string.today) null else nearestDateSeparator
+            }
+            else -> nearestDateSeparator
+        }
+    }
+
+    private fun hideBanner() {
+        _state.update {
+            it.copy(
+                bannerState = it.bannerState.copy(
+                    isVisible = false
+                )
+            )
         }
     }
 
