@@ -22,6 +22,7 @@ import ru.missclick.chat.presentation.model.MessageUi
 @Composable
 fun MessageList(
     messages: List<MessageUi>,
+    messageWithOpenMenu: MessageUi.LocalUserMessage?,
     listState: LazyListState,
     onMessageLongClick: (MessageUi.LocalUserMessage) -> Unit,
     onMessageRetryClick: (MessageUi.LocalUserMessage) -> Unit,
@@ -50,9 +51,11 @@ fun MessageList(
         ) {
             items(
                 items = messages,
+                key = { it.id }
             ) { message ->
                 MessageListItemUi(
                     messageUi = message,
+                    messageWithOpenMenu = messageWithOpenMenu,
                     onMessageLongClick = onMessageLongClick,
                     onDeleteClick = onDeleteMessageClick,
                     onRetryClick = onMessageRetryClick,

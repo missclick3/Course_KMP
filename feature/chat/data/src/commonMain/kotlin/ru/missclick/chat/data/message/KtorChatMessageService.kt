@@ -6,8 +6,10 @@ import ru.missclick.chat.data.mappers.toDomain
 import ru.missclick.chat.data.message.ChatMessageConstants.PAGE_SIZE
 import ru.missclick.chat.domain.message.ChatMessageService
 import ru.missclick.chat.domain.models.ChatMessage
+import ru.missclick.core.data.networking.delete
 import ru.missclick.core.data.networking.get
 import ru.missclick.core.domain.util.DataError
+import ru.missclick.core.domain.util.EmptyResult
 import ru.missclick.core.domain.util.Result
 import ru.missclick.core.domain.util.map
 
@@ -28,5 +30,11 @@ class KtorChatMessageService(
                 }
             }
         ).map { it.map { it.toDomain() } }
+    }
+
+    override suspend fun deleteMessage(messageId: String): EmptyResult<DataError.Remote> {
+        return httpClient.delete(
+            route = "/messages/$messageId"
+        )
     }
 }

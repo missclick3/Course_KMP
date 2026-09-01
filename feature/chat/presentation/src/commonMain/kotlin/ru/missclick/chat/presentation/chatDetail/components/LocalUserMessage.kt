@@ -31,6 +31,7 @@ import ru.missclick.core.designsystem.theme.extended
 @Composable
 fun LocalUserMessage(
     message: MessageUi.LocalUserMessage,
+    messageWithOpenMenu: MessageUi.LocalUserMessage?,
     onMessageLongClick: () -> Unit,
     onDismissMessageMenu: () -> Unit,
     onDeleteClick: () -> Unit,
@@ -60,7 +61,7 @@ fun LocalUserMessage(
             )
 
             CourseDropDownMenu(
-                isOpen = message.isMenuOpen,
+                isOpen = messageWithOpenMenu?.id == message.id,
                 items = listOf(
                     DropDownItem(
                         title = stringResource(Res.string.delete_for_everyone),
