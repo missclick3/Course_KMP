@@ -4,6 +4,7 @@ import kotlinx.coroutines.flow.Flow
 import ru.missclick.chat.domain.models.ChatMessage
 import ru.missclick.chat.domain.models.ChatMessageDeliveryStatus
 import ru.missclick.chat.domain.models.MessageWithSender
+import ru.missclick.chat.domain.models.OutgoingNewMessage
 import ru.missclick.core.domain.util.DataError
 import ru.missclick.core.domain.util.EmptyResult
 import ru.missclick.core.domain.util.Result
@@ -20,4 +21,6 @@ interface MessageRepository {
     ): Result<List<ChatMessage>, DataError>
 
     fun getMessagesForChat(chatId: String): Flow<List<MessageWithSender>>
+
+    suspend fun sendMessage(message: OutgoingNewMessage): EmptyResult<DataError>
 }

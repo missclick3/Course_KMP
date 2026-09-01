@@ -36,11 +36,11 @@ import kotlinx.coroutines.launch
 import kotlinx.serialization.json.Json
 import ru.missclick.chat.data.dto.websocket.WebSocketMessageDto
 import ru.missclick.chat.data.lifecycle.AppLifecycleObserver
-import ru.missclick.chat.domain.error.ConnectionError
 import ru.missclick.chat.domain.models.ConnectionState
 import ru.missclick.core.data.networking.UrlConstants.BASE_URL_WS
 import ru.missclick.core.domain.auth.SessionStorage
 import ru.missclick.core.domain.logging.CourseLogger
+import ru.missclick.core.domain.util.DataError
 import ru.missclick.core.domain.util.EmptyResult
 import ru.missclick.core.domain.util.Result
 import ru.missclick.feature.chat.data.BuildKonfig
@@ -205,11 +205,11 @@ class KtorWebSocketConnector(
         }
     }
 
-    suspend fun sendMessage(message: String): EmptyResult<ConnectionError> {
+    suspend fun sendMessage(message: String): EmptyResult<DataError.Connection> {
         val connectionState = connectionState.value
 
         if (currentSession == null || connectionState != ConnectionState.CONNECTED) {
-            return Result.Failure(ConnectionError.NOT_CONNECTED)
+            return Result.Failure(DataError.Connection.NOT_CONNECTED)
         }
 
         return try {
@@ -218,7 +218,7 @@ class KtorWebSocketConnector(
         } catch (e: Exception) {
             currentCoroutineContext().ensureActive()
             logger.error("Unable to send WebSocket message", e)
-            Result.Failure(ConnectionError.MESSAGE_SEND_FAILED)
+            Result.Failure(DataError.Connection.MESSAGE_SEND_FAILED)
         }
     }
 }

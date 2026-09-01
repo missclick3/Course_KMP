@@ -14,19 +14,13 @@ import ru.missclick.chat.data.dto.websocket.IncomingWebSocketType
 import ru.missclick.chat.data.dto.websocket.WebSocketMessageDto
 import ru.missclick.chat.data.mappers.toDomain
 import ru.missclick.chat.data.mappers.toEntity
-import ru.missclick.chat.data.mappers.toNewMessage
 import ru.missclick.chat.data.network.KtorWebSocketConnector
 import ru.missclick.chat.database.CourseChatDatabase
 import ru.missclick.chat.domain.chat.ChatConnectionClient
 import ru.missclick.chat.domain.chat.ChatRepository
 import ru.missclick.chat.domain.message.MessageRepository
-import ru.missclick.chat.domain.error.ConnectionError
-import ru.missclick.chat.domain.models.ChatMessage
-import ru.missclick.chat.domain.models.ChatMessageDeliveryStatus
 import ru.missclick.chat.domain.models.ConnectionState
 import ru.missclick.core.domain.auth.SessionStorage
-import ru.missclick.core.domain.util.EmptyResult
-import ru.missclick.core.domain.util.onFailure
 
 class WebSocketChatConnectionClient(
     private val webSocketConnector: KtorWebSocketConnector,
@@ -52,24 +46,6 @@ class WebSocketChatConnectionClient(
         )
 
     override val connectionState: StateFlow<ConnectionState> = webSocketConnector.connectionState
-
-    override suspend fun sendChatMessage(message: ChatMessage): EmptyResult<ConnectionError> {
-        val outgoingDto = message.toNewMessage()
-        val webSocketMessage = WebSocketMessageDto(
-            type = outgoingDto.type.name,
-            payload = json.encodeToString(outgoingDto)
-        )
-        val rawJsonPayload = json.encodeToString(webSocketMessage)
-
-        return webSocketConnector
-            .sendMessage(rawJsonPayload)
-            .onFailure { error ->
-                messageRepository.updateMessageDeliveryStatus(
-                    messageId = message.id,
-                    status = ChatMessageDeliveryStatus.FAILED
-                )
-            }
-    }
 
     private fun parseIncomingMessage(message: WebSocketMessageDto): IncomingWebSocketDto? {
         return when (message.type) {

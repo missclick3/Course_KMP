@@ -3,6 +3,7 @@
 package ru.missclick.chat.presentation.chatDetail
 
 import androidx.compose.foundation.text.input.clearText
+import androidx.compose.runtime.snapshotFlow
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -25,11 +26,13 @@ import ru.missclick.chat.domain.chat.ChatConnectionClient
 import ru.missclick.chat.domain.chat.ChatRepository
 import ru.missclick.chat.domain.message.MessageRepository
 import ru.missclick.chat.domain.models.ConnectionState
+import ru.missclick.chat.domain.models.OutgoingNewMessage
 import ru.missclick.chat.presentation.mappers.toUi
 import ru.missclick.core.domain.auth.SessionStorage
 import ru.missclick.core.domain.util.onFailure
 import ru.missclick.core.domain.util.onSuccess
 import ru.missclick.core.presentation.util.toUiText
+import kotlin.uuid.Uuid
 
 class ChatDetailViewModel(
     private val chatRepository: ChatRepository,
@@ -54,6 +57,12 @@ class ChatDetailViewModel(
         }
 
     private val _state = MutableStateFlow(ChatDetailState())
+
+    private val canSendMessage = snapshotFlow { _state.value.messageTextFieldState.text.toString() }
+        .map { it.isBlank() }
+        .combine(connectionClient.connectionState) { isMessageBlank, connectionState ->
+            !isMessageBlank && connectionState == ConnectionState.CONNECTED
+        }
 
     private val stateWithMessages = combine(
         _state,
@@ -81,6 +90,7 @@ class ChatDetailViewModel(
             if (!hasLoadedInitialData) {
                 observeConnectionState()
                 observeChatMessages()
+                observeCanSendMessage()
                 hasLoadedInitialData = true
             }
         }
@@ -103,7 +113,32 @@ class ChatDetailViewModel(
             is ChatDetailAction.OnMessageLongClick -> {}
             is ChatDetailAction.OnRetryClick -> {}
             ChatDetailAction.OnScrollToTop -> {}
-            ChatDetailAction.OnSendMessageClick -> {}
+            ChatDetailAction.OnSendMessageClick -> sendMessage()
+        }
+    }
+
+    private fun sendMessage() {
+        val currentChatId = _chatId.value
+        val content = state.value.messageTextFieldState.text.toString().trim()
+        if (content.isBlank() || currentChatId == null) {
+            return
+        }
+
+        viewModelScope.launch {
+            val message = OutgoingNewMessage(
+                chatId = currentChatId,
+                messageId = Uuid.random().toString(),
+                content = content
+            )
+
+            messageRepository
+                .sendMessage(message)
+                .onSuccess {
+                    state.value.messageTextFieldState.clearText()
+                }
+                .onFailure { error ->
+                    eventChannel.send(ChatDetailEvent.OnError(error.toUiText()))
+                }
         }
     }
 
@@ -210,5 +245,13 @@ class ChatDetailViewModel(
             }
         }
         .launchIn(viewModelScope)
+    }
+
+    private fun observeCanSendMessage() {
+        canSendMessage.onEach { canSendMessage ->
+            _state.update {
+                it.copy(canSendMessage = canSendMessage)
+            }
+        }.launchIn(viewModelScope)
     }
 }
