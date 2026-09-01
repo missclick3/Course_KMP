@@ -30,7 +30,7 @@ interface ChatDao {
 
     @Query("SELECT * FROM chatentity WHERE chatId = :id")
     @Transaction
-    suspend fun getChatById(id: String): ChatWithParticipants
+    suspend fun getChatById(id: String): ChatWithParticipants?
 
     @Query("DELETE FROM chatentity")
     suspend fun deleteAllChat()
