@@ -25,7 +25,7 @@ fun LastMessageView.toDomain(): ChatMessage {
         id = messageId,
         chatId = chatId,
         content = content,
-        createdAt = Instant.fromEpochSeconds(timestamp),
+        createdAt = Instant.fromEpochMilliseconds(timestamp),
         senderId = senderId,
         deliveryStatus = ChatMessageDeliveryStatus.valueOf(this.deliveryStatus)
     )

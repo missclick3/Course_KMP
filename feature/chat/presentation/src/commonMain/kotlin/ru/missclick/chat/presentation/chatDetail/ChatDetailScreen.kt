@@ -44,6 +44,7 @@ import ru.missclick.chat.domain.models.ChatMessageDeliveryStatus
 import ru.missclick.chat.presentation.chatDetail.components.ChatDetailHeader
 import ru.missclick.chat.presentation.chatDetail.components.MessageBox
 import ru.missclick.chat.presentation.chatDetail.components.MessageList
+import ru.missclick.chat.presentation.chatDetail.components.PaginationScrollListener
 import ru.missclick.chat.presentation.components.ChatHeader
 import ru.missclick.chat.presentation.components.EmptySection
 import ru.missclick.chat.presentation.model.ChatUi
@@ -120,6 +121,22 @@ fun ChatDetailScreen(
     val configuration = currentDeviceConfiguration()
     val messageListState = rememberLazyListState()
 
+    val realMessageItemCount = remember(state.messages) {
+        state.messages.filter {
+            it is MessageUi.LocalUserMessage || it is MessageUi.OtherUserMessage
+        }.size
+    }
+
+    PaginationScrollListener(
+        lazyListState = messageListState,
+        itemCount = realMessageItemCount,
+        isPaginationLoading = state.isPaginationLoading,
+        isEndReached = state.endReached,
+        onNearTop = {
+            onAction(ChatDetailAction.OnScrollToTop)
+        }
+    )
+
     Scaffold(
         modifier = Modifier
             .fillMaxSize(),
@@ -182,11 +199,16 @@ fun ChatDetailScreen(
                             messages = state.messages,
                             messageWithOpenMenu = state.messageWithOpenMenu,
                             listState = messageListState,
+                            isPaginationLoading = state.isPaginationLoading,
+                            paginationError = state.paginationError?.asString(),
                             onMessageLongClick = { message ->
                                 onAction(ChatDetailAction.OnMessageLongClick(message))
                             },
                             onMessageRetryClick = { message ->
                                 onAction(ChatDetailAction.OnRetryClick(message))
+                            },
+                            onRetryPaginationClick = {
+                                onAction(ChatDetailAction.OnRetryPaginationClick)
                             },
                             onDismissMessageMenu = {
                                 onAction(ChatDetailAction.OnDismissMessageMenu)
