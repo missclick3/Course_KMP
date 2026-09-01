@@ -43,7 +43,7 @@ fun LocalUserMessage(
         verticalAlignment = Alignment.Bottom,
         horizontalArrangement = Arrangement.spacedBy(8.dp, Alignment.End)
     ) {
-        Box(Modifier.weight(1f)) {
+        Box {
             CourseChatBubble(
                 messageContent = message.content,
                 sender = stringResource(Res.string.you),
