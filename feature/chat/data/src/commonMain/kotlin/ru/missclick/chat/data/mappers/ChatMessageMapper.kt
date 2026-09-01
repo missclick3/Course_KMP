@@ -70,7 +70,7 @@ fun ChatMessageEntity.toDomain() = ChatMessage(
     content = content,
     senderId = senderId,
     createdAt = Instant.fromEpochSeconds(timestamp),
-    deliveryStatus = ChatMessageDeliveryStatus.SENT
+    deliveryStatus = ChatMessageDeliveryStatus.valueOf(deliveryStatus)
 )
 
 fun ChatMessage.toNewMessage(): OutgoingWebSocketDto.NewMessage {

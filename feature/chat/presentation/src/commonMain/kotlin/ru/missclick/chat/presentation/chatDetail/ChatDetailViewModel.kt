@@ -28,6 +28,7 @@ import ru.missclick.chat.domain.message.MessageRepository
 import ru.missclick.chat.domain.models.ConnectionState
 import ru.missclick.chat.domain.models.OutgoingNewMessage
 import ru.missclick.chat.presentation.mappers.toUi
+import ru.missclick.chat.presentation.model.MessageUi
 import ru.missclick.core.domain.auth.SessionStorage
 import ru.missclick.core.domain.util.onFailure
 import ru.missclick.core.domain.util.onSuccess
@@ -74,7 +75,8 @@ class ChatDetailViewModel(
         }
 
         currentState.copy(
-            chatUi = chatInfo.chat.toUi(authInfo.user.id)
+            chatUi = chatInfo.chat.toUi(authInfo.user.id),
+            messages = chatInfo.messages.map { it.toUi(authInfo.user.id) }
         )
     }
     @OptIn(ExperimentalCoroutinesApi::class)
@@ -111,9 +113,19 @@ class ChatDetailViewModel(
             ChatDetailAction.OnDismissMessageMenu -> {}
             ChatDetailAction.OnLeaveChatClick -> onLeaveChatClick()
             is ChatDetailAction.OnMessageLongClick -> {}
-            is ChatDetailAction.OnRetryClick -> {}
+            is ChatDetailAction.OnRetryClick -> retryMessage(action.message)
             ChatDetailAction.OnScrollToTop -> {}
             ChatDetailAction.OnSendMessageClick -> sendMessage()
+        }
+    }
+
+    private fun retryMessage(message: MessageUi.LocalUserMessage) {
+        viewModelScope.launch {
+            messageRepository
+                .retryMessage(message.id)
+                .onFailure { error ->
+                    eventChannel.send(ChatDetailEvent.OnError(error.toUiText()))
+                }
         }
     }
 
@@ -217,17 +229,6 @@ class ChatDetailViewModel(
                 if (chatId != null) {
                     messageRepository.getMessagesForChat(chatId)
                 } else emptyFlow()
-            }
-            .combine(sessionStorage.observeAuthInfo()) { messages, authInfo ->
-                if (authInfo == null) {
-                    return@combine messages
-                }
-                _state.update {
-                    it.copy(
-                        messages = messages.map { it.toUi(authInfo.user.id) }
-                    )
-                }
-                messages
             }
 
         val isNearBottom = state.map { it.isNearBottom }.distinctUntilChanged()
