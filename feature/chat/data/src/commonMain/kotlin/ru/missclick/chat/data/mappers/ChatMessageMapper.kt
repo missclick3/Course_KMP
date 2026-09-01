@@ -1,6 +1,7 @@
 package ru.missclick.chat.data.mappers
 
 import ru.missclick.chat.data.dto.ChatMessageDto
+import ru.missclick.chat.data.dto.websocket.OutgoingWebSocketDto
 import ru.missclick.chat.database.entities.ChatMessageEntity
 import ru.missclick.chat.database.view.LastMessageView
 import ru.missclick.chat.domain.models.ChatMessage
@@ -68,3 +69,11 @@ fun ChatMessageEntity.toDomain() = ChatMessage(
     createdAt = Instant.fromEpochSeconds(timestamp),
     deliveryStatus = ChatMessageDeliveryStatus.SENT
 )
+
+fun ChatMessage.toNewMessage(): OutgoingWebSocketDto.NewMessage {
+    return OutgoingWebSocketDto.NewMessage(
+        messageId = id,
+        chatId = chatId,
+        content = content,
+    )
+}
