@@ -19,7 +19,7 @@ import ru.missclick.chat.data.network.KtorWebSocketConnector
 import ru.missclick.chat.database.CourseChatDatabase
 import ru.missclick.chat.domain.chat.ChatConnectionClient
 import ru.missclick.chat.domain.chat.ChatRepository
-import ru.missclick.chat.domain.chat.MessageRepository
+import ru.missclick.chat.domain.message.MessageRepository
 import ru.missclick.chat.domain.error.ConnectionError
 import ru.missclick.chat.domain.models.ChatMessage
 import ru.missclick.chat.domain.models.ChatMessageDeliveryStatus

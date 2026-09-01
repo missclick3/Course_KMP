@@ -81,6 +81,7 @@ fun ChatDetailRoot(
     ObserveAsEvents(viewModel.events) { event ->
         when (event) {
             ChatDetailEvent.OnChatLeft -> onBack()
+            ChatDetailEvent.OnNewMessage -> {}
             is ChatDetailEvent.OnError -> {
                 snackbarState.showSnackbar(event.error.asStringAsync())
             }
