@@ -4,11 +4,15 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
+import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onStart
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
+import ru.missclick.chat.domain.chat.ChatConnectionClient
 
-class ChatListDetailViewModel: ViewModel() {
+class ChatListDetailViewModel(
+    private val connectionClient: ChatConnectionClient
+): ViewModel() {
 
     private var hasLoadedInitialData = false
 
@@ -17,6 +21,7 @@ class ChatListDetailViewModel: ViewModel() {
     val state = _state
         .onStart {
             if (!hasLoadedInitialData) {
+                connectionClient.chatMessages.launchIn(viewModelScope)
                 hasLoadedInitialData = true
             }
         }
@@ -28,7 +33,7 @@ class ChatListDetailViewModel: ViewModel() {
 
     fun onAction(action: ChatListDetailAction) {
         when (action) {
-            is ChatListDetailAction.OnChatClick -> {
+            is ChatListDetailAction.OnSelectChat -> {
                 _state.update {
                     it.copy(
                         selectedChatId = action.chatId

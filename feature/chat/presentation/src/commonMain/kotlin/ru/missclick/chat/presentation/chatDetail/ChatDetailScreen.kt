@@ -1,6 +1,8 @@
 package ru.missclick.chat.presentation.chatDetail
 
 import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -10,6 +12,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.input.rememberTextFieldState
@@ -20,7 +23,11 @@ import androidx.compose.material3.SnackbarHostState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.setValue
+import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
@@ -28,19 +35,27 @@ import androidx.compose.ui.backhandler.BackHandler
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.RectangleShape
+import androidx.compose.ui.layout.onSizeChanged
+import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import course_kmp.feature.chat.presentation.generated.resources.Res
 import course_kmp.feature.chat.presentation.generated.resources.no_chat_selected
 import course_kmp.feature.chat.presentation.generated.resources.select_a_chat
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.flow.filter
+import kotlinx.coroutines.launch
 import org.jetbrains.compose.resources.stringResource
 import org.koin.compose.viewmodel.koinViewModel
 import ru.missclick.chat.domain.models.ChatMessage
 import ru.missclick.chat.domain.models.ChatMessageDeliveryStatus
 import ru.missclick.chat.presentation.chatDetail.components.ChatDetailHeader
+import ru.missclick.chat.presentation.chatDetail.components.DateChip
+import ru.missclick.chat.presentation.chatDetail.components.MessageBannerListener
 import ru.missclick.chat.presentation.chatDetail.components.MessageBox
 import ru.missclick.chat.presentation.chatDetail.components.MessageList
+import ru.missclick.chat.presentation.chatDetail.components.PaginationScrollListener
 import ru.missclick.chat.presentation.components.ChatHeader
 import ru.missclick.chat.presentation.components.EmptySection
 import ru.missclick.chat.presentation.model.ChatUi
@@ -53,6 +68,7 @@ import ru.missclick.core.presentation.util.UiText
 import ru.missclick.core.presentation.util.clearFocusOnTap
 import ru.missclick.core.presentation.util.currentDeviceConfiguration
 import kotlin.time.Clock
+import kotlin.time.Duration.Companion.milliseconds
 import kotlin.uuid.Uuid
 
 @OptIn(ExperimentalComposeUiApi::class)
@@ -70,17 +86,28 @@ fun ChatDetailRoot(
         viewModel.onAction(ChatDetailAction.OnSelectChat(chatId))
     }
 
+    val scope = rememberCoroutineScope()
     BackHandler(
         enabled = !isDetailPresent
     ) {
-        viewModel.onAction(ChatDetailAction.OnSelectChat(null))
+        scope.launch {
+            delay(300L.milliseconds)
+            viewModel.onAction(ChatDetailAction.OnSelectChat(null))
+        }
         onBack()
     }
 
     val snackbarState = remember { SnackbarHostState() }
+    val messageListState = rememberLazyListState()
+
     ObserveAsEvents(viewModel.events) { event ->
         when (event) {
             ChatDetailEvent.OnChatLeft -> onBack()
+            ChatDetailEvent.OnNewMessage -> {
+                scope.launch {
+                    messageListState.animateScrollToItem(0)
+                }
+            }
             is ChatDetailEvent.OnError -> {
                 snackbarState.showSnackbar(event.error.asStringAsync())
             }
@@ -89,10 +116,12 @@ fun ChatDetailRoot(
 
     ChatDetailScreen(
         state = state,
+        messageListState = messageListState,
         isDetailPresent = isDetailPresent,
         onAction = { action ->
             when (action) {
                 is ChatDetailAction.OnChatMembersClick -> onChatMembersClick()
+                is ChatDetailAction.OnBackClick -> onBack()
                 else -> Unit
             }
             viewModel.onAction(action)
@@ -104,12 +133,56 @@ fun ChatDetailRoot(
 @Composable
 fun ChatDetailScreen(
     state: ChatDetailState,
+    messageListState: LazyListState,
     onAction: (ChatDetailAction) -> Unit,
     isDetailPresent: Boolean,
     snackbarHostState: SnackbarHostState,
 ) {
     val configuration = currentDeviceConfiguration()
-    val messageListState = rememberLazyListState()
+
+    val realMessageItemCount = remember(state.messages) {
+        state.messages.filter {
+            it is MessageUi.LocalUserMessage || it is MessageUi.OtherUserMessage
+        }.size
+    }
+
+    LaunchedEffect(messageListState) {
+        snapshotFlow {
+            messageListState.firstVisibleItemIndex to messageListState.layoutInfo.totalItemsCount
+        }.filter { (firstVisibleItemIndex, totalItemsCount) ->
+            firstVisibleItemIndex > 0 && totalItemsCount > 0
+        }.collect { (firstVisibleItemIndex, _) ->
+            onAction(ChatDetailAction.OnFirstVisibleIndexChanged(firstVisibleItemIndex))
+        }
+    }
+
+    MessageBannerListener(
+        lazyListState = messageListState,
+        messages = state.messages,
+        isBannerVisible = state.bannerState.isVisible,
+        onShowBanner = { index ->
+            onAction(ChatDetailAction.OnTopVisibleIndexChanged(index))
+        },
+        onHide = {
+            onAction(ChatDetailAction.OnHideBanner)
+        }
+    )
+
+    PaginationScrollListener(
+        lazyListState = messageListState,
+        itemCount = realMessageItemCount,
+        isPaginationLoading = state.isPaginationLoading,
+        isEndReached = state.endReached,
+        onNearTop = {
+            onAction(ChatDetailAction.OnScrollToTop)
+        }
+    )
+
+    var headerHeight by remember {
+        mutableStateOf(0.dp)
+    }
+
+    val density = LocalDensity.current
 
     Scaffold(
         modifier = Modifier
@@ -145,7 +218,14 @@ fun ChatDetailScreen(
                             modifier = Modifier.fillMaxSize()
                         )
                     } else {
-                        ChatHeader {
+                        ChatHeader(
+                            modifier = Modifier
+                                .onSizeChanged {
+                                    headerHeight = with (density) {
+                                        it.height.toDp()
+                                    }
+                                }
+                        ) {
                             ChatDetailHeader(
                                 chatUi = state.chatUi,
                                 isDetailPresent = isDetailPresent,
@@ -171,12 +251,18 @@ fun ChatDetailScreen(
 
                         MessageList(
                             messages = state.messages,
+                            messageWithOpenMenu = state.messageWithOpenMenu,
                             listState = messageListState,
+                            isPaginationLoading = state.isPaginationLoading,
+                            paginationError = state.paginationError?.asString(),
                             onMessageLongClick = { message ->
                                 onAction(ChatDetailAction.OnMessageLongClick(message))
                             },
                             onMessageRetryClick = { message ->
                                 onAction(ChatDetailAction.OnRetryClick(message))
+                            },
+                            onRetryPaginationClick = {
+                                onAction(ChatDetailAction.OnRetryPaginationClick)
                             },
                             onDismissMessageMenu = {
                                 onAction(ChatDetailAction.OnDismissMessageMenu)
@@ -194,7 +280,7 @@ fun ChatDetailScreen(
                         ) {
                             MessageBox(
                                 messageTextFieldState = state.messageTextFieldState,
-                                isTextInputEnabled = state.canSendMessage,
+                                isSendButtonEnabled = state.canSendMessage,
                                 connectionState = state.connectionState,
                                 onSendClick = {
                                     onAction(ChatDetailAction.OnSendMessageClick)
@@ -222,7 +308,7 @@ fun ChatDetailScreen(
                     ) {
                         MessageBox(
                             messageTextFieldState = state.messageTextFieldState,
-                            isTextInputEnabled = state.canSendMessage,
+                            isSendButtonEnabled = state.canSendMessage,
                             connectionState = state.connectionState,
                             onSendClick = {
                                 onAction(ChatDetailAction.OnSendMessageClick)
@@ -232,6 +318,21 @@ fun ChatDetailScreen(
                                 .padding(8.dp)
                         )
                     }
+                }
+            }
+
+            AnimatedVisibility(
+                visible = state.bannerState.isVisible,
+                modifier = Modifier
+                    .align(Alignment.TopCenter)
+                    .padding(top = headerHeight + 16.dp),
+                enter = fadeIn(),
+                exit = fadeOut()
+            ) {
+                if (state.bannerState.formattedDate != null) {
+                    DateChip(
+                        date = state.bannerState.formattedDate.asString()
+                    )
                 }
             }
         }
@@ -268,7 +369,8 @@ private fun ChatDetailEmptyPreview() {
             state = ChatDetailState(),
             isDetailPresent = false,
             onAction = {},
-            snackbarHostState = remember { SnackbarHostState() }
+            snackbarHostState = remember { SnackbarHostState() },
+            messageListState = rememberLazyListState()
         )
     }
 }
@@ -319,7 +421,6 @@ private fun ChatDetailMessagesPreview() {
                             id = Uuid.random().toString(),
                             content = "Hello world!",
                             deliveryStatus = ChatMessageDeliveryStatus.SENT,
-                            isMenuOpen = false,
                             formattedSentTime = UiText.DynamicString("Friday, Aug 20")
                         )
                     } else {
@@ -338,7 +439,8 @@ private fun ChatDetailMessagesPreview() {
             ),
             isDetailPresent = true,
             onAction = {},
-            snackbarHostState = remember { SnackbarHostState() }
+            snackbarHostState = remember { SnackbarHostState() },
+            messageListState = rememberLazyListState()
         )
     }
 }
