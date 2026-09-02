@@ -2,6 +2,7 @@ package ru.missclick.core.data.auth
 
 import io.ktor.client.HttpClient
 import ru.missclick.core.data.dto.AuthInfoSerializable
+import ru.missclick.core.data.dto.requests.ChangePasswordRequest
 import ru.missclick.core.data.dto.requests.RegisterRequest
 import ru.missclick.core.data.dto.requests.EmailRequest
 import ru.missclick.core.data.dto.requests.LoginRequest
@@ -81,6 +82,19 @@ class KtorAuthService(
             body = ResetPasswordRequest(
                 newPassword = newPassword,
                 token = token
+            )
+        )
+    }
+
+    override suspend fun changePassword(
+        currentPassword: String,
+        newPassword: String
+    ): EmptyResult<DataError.Remote> {
+        return httpClient.post(
+            route = "/auth/change-password",
+            body = ChangePasswordRequest(
+                oldPassword = currentPassword,
+                newPassword = newPassword
             )
         )
     }

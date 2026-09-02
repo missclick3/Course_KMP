@@ -22,6 +22,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
@@ -35,6 +36,7 @@ import course_kmp.feature.chat.presentation.generated.resources.delete_profile_p
 import course_kmp.feature.chat.presentation.generated.resources.email
 import course_kmp.feature.chat.presentation.generated.resources.new_password
 import course_kmp.feature.chat.presentation.generated.resources.password
+import course_kmp.feature.chat.presentation.generated.resources.password_changed_successfully
 import course_kmp.feature.chat.presentation.generated.resources.password_hint
 import course_kmp.feature.chat.presentation.generated.resources.profile_image
 import course_kmp.feature.chat.presentation.generated.resources.save
@@ -55,6 +57,7 @@ import ru.missclick.core.designsystem.components.dialog.DestructiveConfirmationD
 import ru.missclick.core.designsystem.components.textfields.CoursePasswordTextField
 import ru.missclick.core.designsystem.components.textfields.CourseTextField
 import ru.missclick.core.designsystem.theme.CourseTheme
+import ru.missclick.core.designsystem.theme.extended
 import ru.missclick.core.presentation.util.clearFocusOnTap
 import ru.missclick.core.presentation.util.currentDeviceConfiguration
 
@@ -190,8 +193,7 @@ fun ProfileScreen(
                     onAction(ProfileAction.OnToggleCurrentPasswordVisibility)
                 },
                 placeholder = stringResource(Res.string.current_password),
-                isError = state.currentPasswordError != null,
-                supportingText = state.currentPasswordError?.asString()
+                isError = state.newPasswordError != null
             )
             CoursePasswordTextField(
                 state = state.newPasswordTextState,
@@ -204,6 +206,15 @@ fun ProfileScreen(
                 supportingText = state.newPasswordError?.asString()
                     ?: stringResource(Res.string.password_hint)
             )
+            if (state.isPasswordChangeSuccessful) {
+                Text(
+                    text = stringResource(Res.string.password_changed_successfully),
+                    style = MaterialTheme.typography.labelSmall,
+                    color = MaterialTheme.colorScheme.extended.success,
+                    textAlign = TextAlign.End,
+                    modifier = Modifier.fillMaxWidth()
+                )
+            }
             Row(
                 modifier = Modifier
                     .fillMaxWidth(),
