@@ -29,6 +29,7 @@ import ru.missclick.core.presentation.util.DialogSheetScopedViewModel
 @OptIn(ExperimentalMaterial3AdaptiveApi::class, ExperimentalComposeUiApi::class)
 @Composable
 fun ChatListDetailAdaptiveLayout(
+    initialChatId: String?,
     onLogout: () -> Unit,
     chatListDetailViewModel: ChatListDetailViewModel = koinViewModel()
 ) {
@@ -39,6 +40,13 @@ fun ChatListDetailAdaptiveLayout(
     )
 
     val scope = rememberCoroutineScope()
+
+    LaunchedEffect(initialChatId) {
+        if (initialChatId != null) {
+            chatListDetailViewModel.onAction(ChatListDetailAction.OnSelectChat(initialChatId))
+            scaffoldNavigator.navigateTo(ListDetailPaneScaffoldRole.Detail)
+        }
+    }
 
     BackHandler(enabled = scaffoldNavigator.canNavigateBack()) {
         scope.launch {
