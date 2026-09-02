@@ -12,6 +12,7 @@ import ru.missclick.chat.data.mappers.toDomain
 import ru.missclick.chat.domain.models.ChatParticipant
 import ru.missclick.chat.domain.models.ProfilePictureUploadUrls
 import ru.missclick.chat.domain.participant.ChatParticipantService
+import ru.missclick.core.data.networking.delete
 import ru.missclick.core.data.networking.get
 import ru.missclick.core.data.networking.post
 import ru.missclick.core.data.networking.safeCall
@@ -76,6 +77,12 @@ class KtorChatParticipantService(
             body = ConfirmProfilePictureRequest(
                 publicUrl = publicUrl
             )
+        )
+    }
+
+    override suspend fun deleteProfilePicture(): EmptyResult<DataError.Remote> {
+        return httpClient.delete(
+            route = "/participants/profile-picture"
         )
     }
 }
