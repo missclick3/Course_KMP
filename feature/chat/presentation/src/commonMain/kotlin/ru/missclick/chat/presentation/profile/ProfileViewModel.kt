@@ -1,5 +1,6 @@
 package ru.missclick.chat.presentation.profile
 
+import androidx.compose.foundation.text.input.TextFieldState
 import androidx.compose.foundation.text.input.clearText
 import androidx.compose.runtime.snapshotFlow
 import androidx.lifecycle.ViewModel
@@ -17,7 +18,9 @@ import kotlinx.coroutines.flow.onStart
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import ru.missclick.chat.domain.participant.ChatParticipantRepository
 import ru.missclick.core.domain.auth.AuthService
+import ru.missclick.core.domain.auth.SessionStorage
 import ru.missclick.core.domain.util.DataError
 import ru.missclick.core.domain.util.onFailure
 import ru.missclick.core.domain.util.onSuccess
@@ -26,16 +29,31 @@ import ru.missclick.core.presentation.util.UiText
 import ru.missclick.core.presentation.util.toUiText
 
 class ProfileViewModel(
-    private val authService: AuthService
+    private val authService: AuthService,
+    private val chatParticipantRepository: ChatParticipantRepository,
+    sessionStorage: SessionStorage
 ) : ViewModel() {
 
     private var hasLoadedInitialData = false
 
     private val _state = MutableStateFlow(ProfileState())
-    val state = _state
+    val state = combine(
+        _state,
+        sessionStorage.observeAuthInfo()
+    ) { currentState, authInfo ->
+        if (authInfo != null) {
+            currentState.copy(
+                username = authInfo.user.username,
+                emailTextState = TextFieldState(authInfo.user.email),
+                profilePictureUrl = authInfo.user.profilePictureUrl,
+                userInitials = authInfo.user.username.take(2).uppercase()
+            )
+        } else currentState
+    }
         .onStart {
             if (!hasLoadedInitialData) {
                 observeCanChangePassword()
+                fetchLocalParticipantDetails()
                 hasLoadedInitialData = true
             }
         }
@@ -67,6 +85,12 @@ class ProfileViewModel(
             it.copy(
                 isCurrentPasswordVisible = !it.isCurrentPasswordVisible
             )
+        }
+    }
+
+    private fun fetchLocalParticipantDetails() {
+        viewModelScope.launch {
+            chatParticipantRepository.fetchLocalParticipant()
         }
     }
 

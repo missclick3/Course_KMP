@@ -1,9 +1,9 @@
-package ru.missclick.chat.data.chat
+package ru.missclick.chat.data.participant
 
 import io.ktor.client.HttpClient
 import ru.missclick.chat.data.dto.ChatParticipantDto
 import ru.missclick.chat.data.mappers.toDomain
-import ru.missclick.chat.domain.chat.ChatParticipantService
+import ru.missclick.chat.domain.participant.ChatParticipantService
 import ru.missclick.chat.domain.models.ChatParticipant
 import ru.missclick.core.data.networking.get
 import ru.missclick.core.domain.util.DataError
@@ -19,6 +19,12 @@ class KtorChatParticipantService(
             queryParams = mapOf(
                 "query" to query
             )
+        ).map { it.toDomain() }
+    }
+
+    override suspend fun getLocalParticipant(): Result<ChatParticipant, DataError.Remote> {
+        return httpClient.get<ChatParticipantDto>(
+            route = "/participants",
         ).map { it.toDomain() }
     }
 }
