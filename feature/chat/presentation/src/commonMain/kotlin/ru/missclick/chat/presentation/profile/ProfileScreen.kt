@@ -47,6 +47,7 @@ import org.jetbrains.compose.resources.vectorResource
 import org.koin.compose.viewmodel.koinViewModel
 import ru.missclick.chat.presentation.profile.components.ProfileHeaderSection
 import ru.missclick.chat.presentation.profile.components.ProfileSectionLayout
+import ru.missclick.chat.presentation.profile.mediapicker.rememberImagePickingLauncher
 import ru.missclick.core.designsystem.components.avatar.AvatarSize
 import ru.missclick.core.designsystem.components.avatar.CourseAvatarPhoto
 import ru.missclick.core.designsystem.components.brand.CourseHorizontalDivider
@@ -68,6 +69,15 @@ fun ProfileRoot(
 ) {
     val state by viewModel.state.collectAsStateWithLifecycle()
 
+    val launcher = rememberImagePickingLauncher { pickedImageData ->
+        viewModel.onAction(
+            ProfileAction.OnPictureSelected(
+                bytes = pickedImageData.bytes,
+                mimeType = pickedImageData.mimeType
+            )
+        )
+    }
+
     CourseAdaptiveDialogSheetLayout(
         onDismiss = onDismiss
     ) {
@@ -76,6 +86,9 @@ fun ProfileRoot(
             onAction = { action ->
                 when (action) {
                     is ProfileAction.OnDismiss -> onDismiss()
+                    ProfileAction.OnUploadPictureClick -> {
+                        launcher.launch()
+                    }
                     else -> Unit
                 }
                 viewModel.onAction(action)
