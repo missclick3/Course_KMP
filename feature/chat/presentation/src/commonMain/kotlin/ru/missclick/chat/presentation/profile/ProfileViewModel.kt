@@ -8,6 +8,7 @@ import androidx.lifecycle.viewModelScope
 import course_kmp.feature.chat.presentation.generated.resources.Res
 import course_kmp.feature.chat.presentation.generated.resources.error_current_password_equal_to_new
 import course_kmp.feature.chat.presentation.generated.resources.error_current_password_incorrect
+import course_kmp.feature.chat.presentation.generated.resources.error_invalid_file_type
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.combine
@@ -68,7 +69,54 @@ class ProfileViewModel(
             ProfileAction.OnChangePasswordClick -> changePassword()
             ProfileAction.OnToggleCurrentPasswordVisibility -> toggleCurrentPasswordVisibility()
             ProfileAction.OnToggleNewPasswordVisibility -> toggleNewPasswordVisibility()
+            is ProfileAction.OnPictureSelected -> uploadProfilePicture(action.bytes, action.mimeType)
             else -> Unit
+        }
+    }
+
+    private fun uploadProfilePicture(bytes: ByteArray, mimeType: String?) {
+        if (state.value.isUploadingImage) {
+            return
+        }
+
+        if (mimeType == null) {
+            _state.update {
+                it.copy(
+                    imageError = UiText.Resource(Res.string.error_invalid_file_type)
+                )
+            }
+
+            return
+        }
+
+        _state.update {
+            it.copy(
+                isUploadingImage = true,
+                imageError = null
+            )
+        }
+
+        viewModelScope.launch {
+            chatParticipantRepository
+                .uploadProfilePicture(
+                    imageBytes = bytes,
+                    mimeType = mimeType
+                )
+                .onSuccess {
+                    _state.update {
+                        it.copy(
+                            isUploadingImage = false
+                        )
+                    }
+                }
+                .onFailure { error ->
+                    _state.update {
+                        it.copy(
+                            imageError = error.toUiText(),
+                            isUploadingImage = false
+                        )
+                    }
+                }
         }
     }
 
