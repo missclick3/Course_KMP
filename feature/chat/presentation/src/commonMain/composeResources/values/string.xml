@@ -38,4 +38,18 @@
     <string name="do_you_want_to_log_out">Do you want to log out?</string>
     <string name="do_you_want_to_log_out_desc">You will have to log in again to use the app.</string>
     <string name="error_participant_not_found">No participant found</string>
+
+    <string name="show_password">Show password</string>
+    <string name="hide_password">Hide password</string>
+    <string name="profile_image">Profile Image</string>
+    <string name="upload_image">Upload Image</string>
+    <string name="delete">Delete</string>
+    <string name="contact_support_change_email">Contact support to change email</string>
+    <string name="current_password">Current password</string>
+    <string name="new_password">New password</string>
+    <string name="email">Email</string>
+    <string name="password">Password</string>
+    <string name="password_hint">Use 9+ characters, at least one digit and one uppercase letter</string>
+    <string name="delete_profile_picture">Delete profile picture</string>
+    <string name="delete_profile_picture_desk">Are you sure you want to delete your profile picture? This action cannot be undone.</string>
 </resources>

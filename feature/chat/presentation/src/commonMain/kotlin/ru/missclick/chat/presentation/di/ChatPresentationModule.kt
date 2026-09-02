@@ -7,6 +7,7 @@ import ru.missclick.chat.presentation.chatList.ChatListViewModel
 import ru.missclick.chat.presentation.chatListDetail.ChatListDetailViewModel
 import ru.missclick.chat.presentation.createChat.CreateChatViewModel
 import ru.missclick.chat.presentation.manageChat.ManageChatViewModel
+import ru.missclick.chat.presentation.profile.ProfileViewModel
 
 val chatPresentationModule = module {
     viewModelOf(::ChatListDetailViewModel)
@@ -14,4 +15,5 @@ val chatPresentationModule = module {
     viewModelOf(::ChatListViewModel)
     viewModelOf(::ChatDetailViewModel)
     viewModelOf(::ManageChatViewModel)
+    viewModelOf(::ProfileViewModel)
 }
