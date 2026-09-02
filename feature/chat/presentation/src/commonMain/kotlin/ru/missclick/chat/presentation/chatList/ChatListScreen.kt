@@ -45,6 +45,8 @@ import ru.missclick.core.designsystem.components.buttons.CourseFloatingActionBut
 import ru.missclick.core.designsystem.components.dialog.DestructiveConfirmationDialog
 import ru.missclick.core.designsystem.theme.CourseTheme
 import ru.missclick.core.designsystem.theme.extended
+import ru.missclick.core.presentation.permissions.Permission
+import ru.missclick.core.presentation.permissions.rememberPermissionController
 
 @Composable
 fun ChatListRoot(
@@ -85,6 +87,11 @@ fun ChatListScreen(
     onAction: (ChatListAction) -> Unit,
     snackbarHostState: SnackbarHostState
 ) {
+    val permissionController = rememberPermissionController()
+    LaunchedEffect(true) {
+        permissionController.requestPermission(Permission.NOTIFICATIONS)
+    }
+
     Scaffold(
         modifier = Modifier.fillMaxSize(),
         containerColor = MaterialTheme.colorScheme.extended.surfaceLower,
