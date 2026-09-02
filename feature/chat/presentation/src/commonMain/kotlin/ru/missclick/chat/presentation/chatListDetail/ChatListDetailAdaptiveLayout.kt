@@ -22,6 +22,7 @@ import ru.missclick.chat.presentation.chatDetail.ChatDetailRoot
 import ru.missclick.chat.presentation.chatList.ChatListRoot
 import ru.missclick.chat.presentation.createChat.CreateChatRoot
 import ru.missclick.chat.presentation.manageChat.ManageChatRoot
+import ru.missclick.chat.presentation.profile.ProfileRoot
 import ru.missclick.core.designsystem.theme.extended
 import ru.missclick.core.presentation.util.DialogSheetScopedViewModel
 
@@ -129,6 +130,16 @@ fun ChatListDetailAdaptiveLayout(
                 chatListDetailViewModel.onAction(ChatListDetailAction.OnDismissCurrentDialog)
             },
             onMembersAdded = {
+                chatListDetailViewModel.onAction(ChatListDetailAction.OnDismissCurrentDialog)
+            }
+        )
+    }
+
+    DialogSheetScopedViewModel(
+        visible = sharedState.dialogState is DialogState.Profile
+    ) {
+        ProfileRoot(
+            onDismiss = {
                 chatListDetailViewModel.onAction(ChatListDetailAction.OnDismissCurrentDialog)
             }
         )

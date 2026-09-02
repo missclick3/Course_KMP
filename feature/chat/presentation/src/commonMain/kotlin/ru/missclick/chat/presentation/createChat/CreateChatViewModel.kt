@@ -18,7 +18,7 @@ import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
-import ru.missclick.chat.domain.chat.ChatParticipantService
+import ru.missclick.chat.domain.participant.ChatParticipantService
 import ru.missclick.chat.domain.chat.ChatRepository
 import ru.missclick.chat.presentation.components.manageChat.ManageChatAction
 import ru.missclick.chat.presentation.components.manageChat.ManageChatState
