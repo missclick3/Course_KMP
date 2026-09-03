@@ -14,6 +14,7 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import course_kmp.feature.chat.presentation.generated.resources.Res
 import course_kmp.feature.chat.presentation.generated.resources.group_chat
+import course_kmp.feature.chat.presentation.generated.resources.only_you
 import course_kmp.feature.chat.presentation.generated.resources.you
 import org.jetbrains.compose.resources.stringResource
 import ru.missclick.chat.presentation.model.ChatUi
@@ -32,16 +33,19 @@ fun ChatItemHeaderRow(
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.spacedBy(12.dp)
     ) {
-        CourseStackedAvatar(
-            avatars = chat.otherParticipants
-        )
+        if (chat.otherParticipants.isNotEmpty()) {
+            CourseStackedAvatar(
+                avatars = chat.otherParticipants
+            )
+        }
         Column(
             modifier = Modifier.weight(1f),
             verticalArrangement = Arrangement.spacedBy(6.dp)
         ) {
             Text(
                 text = if (!isGroupChat) {
-                    chat.otherParticipants.first().username
+                    chat.otherParticipants.firstOrNull()?.username
+                        ?: stringResource(Res.string.only_you)
                 } else {
                     stringResource(Res.string.group_chat)
                 },

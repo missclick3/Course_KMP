@@ -6,6 +6,7 @@
     <string name="email_or_username">Email or username</string>
     <string name="group_chat">Group chat</string>
     <string name="you">You</string>
+    <string name="only_you">Only you</string>
     <string name="profile_settings">Profile settings</string>
     <string name="logout">Logout</string>
     <string name="sending">Sending...</string>
