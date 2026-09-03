@@ -79,7 +79,7 @@ fun ChatListDetailAdaptiveLayout(
                             )
                         }
                     },
-                    onConfirmLogoutClick = {
+                    onSuccessfulLogout = {
                         onLogout()
                     },
                     onCreateChatClick = {
