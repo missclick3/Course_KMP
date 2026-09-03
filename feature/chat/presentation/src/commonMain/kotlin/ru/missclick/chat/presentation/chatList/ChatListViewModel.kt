@@ -14,6 +14,7 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import ru.missclick.chat.domain.chat.ChatRepository
 import ru.missclick.chat.domain.notification.DeviceTokenService
+import ru.missclick.chat.domain.participant.ChatParticipantRepository
 import ru.missclick.chat.presentation.mappers.toUi
 import ru.missclick.core.domain.auth.AuthService
 import ru.missclick.core.domain.auth.SessionStorage
@@ -25,7 +26,8 @@ class ChatListViewModel(
     private val repository: ChatRepository,
     private val sessionStorage: SessionStorage,
     private val deviceTokenService: DeviceTokenService,
-    private val authService: AuthService
+    private val authService: AuthService,
+    private val chatParticipantRepository: ChatParticipantRepository
 ) : ViewModel() {
 
     private val eventChannel = Channel<ChatListEvent>()
@@ -50,6 +52,7 @@ class ChatListViewModel(
         .onStart {
             if (!hasLoadedInitialData) {
                 loadChats()
+                fetchLocalUserProfile()
                 hasLoadedInitialData = true
             }
         }
@@ -58,6 +61,12 @@ class ChatListViewModel(
             started = SharingStarted.WhileSubscribed(5_000L),
             initialValue = ChatListState()
         )
+
+    private fun fetchLocalUserProfile() {
+        viewModelScope.launch {
+            chatParticipantRepository.fetchLocalParticipant()
+        }
+    }
 
     fun onAction(action: ChatListAction) {
         when (action) {
