@@ -115,6 +115,12 @@ fun ChatDetailRoot(
         }
     }
 
+    LaunchedEffect(chatId, state.messages) {
+        if (state.messages.isNotEmpty()) {
+            messageListState.animateScrollToItem(0)
+        }
+    }
+
     ChatDetailScreen(
         state = state,
         messageListState = messageListState,
