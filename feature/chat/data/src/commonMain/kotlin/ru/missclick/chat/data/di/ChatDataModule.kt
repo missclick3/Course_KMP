@@ -6,7 +6,6 @@ import org.koin.core.module.Module
 import org.koin.core.module.dsl.singleOf
 import org.koin.dsl.bind
 import org.koin.dsl.module
-import ru.missclick.chat.data.participant.KtorChatParticipantService
 import ru.missclick.chat.data.chat.KtorChatService
 import ru.missclick.chat.data.chat.OfflineFirstChatRepository
 import ru.missclick.chat.data.chat.WebSocketChatConnectionClient
@@ -14,15 +13,18 @@ import ru.missclick.chat.data.message.KtorChatMessageService
 import ru.missclick.chat.data.message.OfflineFirstMessageRepository
 import ru.missclick.chat.data.network.ConnectionRetryHandler
 import ru.missclick.chat.data.network.KtorWebSocketConnector
+import ru.missclick.chat.data.notification.KtorDeviceTokenService
+import ru.missclick.chat.data.participant.KtorChatParticipantService
 import ru.missclick.chat.data.participant.OfflineFirstChatParticipantRepository
 import ru.missclick.chat.database.DatabaseFactory
 import ru.missclick.chat.domain.chat.ChatConnectionClient
-import ru.missclick.chat.domain.participant.ChatParticipantService
 import ru.missclick.chat.domain.chat.ChatRepository
 import ru.missclick.chat.domain.chat.ChatService
 import ru.missclick.chat.domain.message.ChatMessageService
 import ru.missclick.chat.domain.message.MessageRepository
+import ru.missclick.chat.domain.notification.DeviceTokenService
 import ru.missclick.chat.domain.participant.ChatParticipantRepository
+import ru.missclick.chat.domain.participant.ChatParticipantService
 
 expect val platformChatDataModule: Module
 
@@ -36,6 +38,7 @@ val chatDataModule = module {
     singleOf(::WebSocketChatConnectionClient) bind ChatConnectionClient::class
     singleOf(::KtorChatMessageService) bind ChatMessageService::class
     singleOf(::OfflineFirstChatParticipantRepository) bind ChatParticipantRepository::class
+    singleOf(::KtorDeviceTokenService) bind DeviceTokenService::class
     singleOf(::ConnectionRetryHandler)
     singleOf(::KtorWebSocketConnector)
     single {
