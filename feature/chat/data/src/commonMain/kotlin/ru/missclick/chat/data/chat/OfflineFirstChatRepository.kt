@@ -150,4 +150,8 @@ class OfflineFirstChatRepository(
                 participants.map { it.toDomain() }
             }
     }
+
+    override suspend fun deleteAllChats() {
+        db.chatDao.deleteAllChat()
+    }
 }

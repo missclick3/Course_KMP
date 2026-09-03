@@ -1,11 +1,14 @@
 package ru.missclick.core.data.auth
 
 import io.ktor.client.HttpClient
+import io.ktor.client.plugins.auth.authProvider
+import io.ktor.client.plugins.auth.providers.BearerAuthProvider
 import ru.missclick.core.data.dto.AuthInfoSerializable
 import ru.missclick.core.data.dto.requests.ChangePasswordRequest
 import ru.missclick.core.data.dto.requests.RegisterRequest
 import ru.missclick.core.data.dto.requests.EmailRequest
 import ru.missclick.core.data.dto.requests.LoginRequest
+import ru.missclick.core.data.dto.requests.RefreshRequest
 import ru.missclick.core.data.dto.requests.ResetPasswordRequest
 import ru.missclick.core.data.mappers.toDomain
 import ru.missclick.core.data.networking.get
@@ -15,7 +18,9 @@ import ru.missclick.core.domain.auth.AuthService
 import ru.missclick.core.domain.util.DataError
 import ru.missclick.core.domain.util.EmptyResult
 import ru.missclick.core.domain.util.Result
+import ru.missclick.core.domain.util.asEmptyResult
 import ru.missclick.core.domain.util.map
+import ru.missclick.core.domain.util.onSuccess
 
 class KtorAuthService(
     private val httpClient: HttpClient
@@ -97,5 +102,14 @@ class KtorAuthService(
                 newPassword = newPassword
             )
         )
+    }
+
+    override suspend fun logout(refreshToken: String): EmptyResult<DataError.Remote> {
+        return httpClient.post<RefreshRequest, Unit>(
+            route = "/auth/logout",
+            body = RefreshRequest(refreshToken)
+        ).onSuccess {
+            httpClient.authProvider<BearerAuthProvider>()?.clearToken()
+        }.asEmptyResult()
     }
 }
