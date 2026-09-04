@@ -1,6 +1,6 @@
-# Chirp - Kotlin Multiplatform chat client
+# Kotlin Multiplatform chat client
 
-Chirp is a mobile messaging client for Android and iOS. It shares the application UI, navigation, business logic, networking, and local database through Kotlin Multiplatform, with thin native entry points for each platform.
+Mobile messaging client for Android and iOS. It shares the application UI, navigation, business logic, networking, and local database through Kotlin Multiplatform, with thin native entry points for each platform.
 
 The app connects to the hosted Chirp API at `chirp.pl-coding.com`. It demonstrates a production-oriented, modular KMP architecture rather than a basic platform-sharing sample.
 
